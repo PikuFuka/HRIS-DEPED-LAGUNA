@@ -1,0 +1,46 @@
+# IDEs and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Root environment
+*.log
+.env*
+!.env.example
+
+# Client (React/Vite/Tailwind)
+client/node_modules/
+client/dist/
+client/build/
+client/.env*
+!client/.env.example
+client/coverage/
+client/temp.txt
+
+# Server (Laravel)
+server/vendor/
+server/node_modules/
+server/public/build/
+server/public/hot
+server/public/storage
+server/storage/*.key
+server/storage/framework/cache/data/*
+server/storage/framework/sessions/*
+server/storage/framework/testing/*
+server/storage/framework/views/*
+server/storage/logs/*
+!server/storage/logs/.gitignore
+server/.env
+server/.env.backup
+server/.phpunit.result.cache
+server/Homestead.json
+server/Homestead.yaml
+server/auth.json
+server/npm-debug.log
+server/yarn-error.log
+server/.phpunit.cache
+
+# Python Scripts (Tools)
+__pycache__/
+*.pyc

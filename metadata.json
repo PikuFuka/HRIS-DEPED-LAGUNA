@@ -1,0 +1,6 @@
+{
+  "name": "DepEd HRIS",
+  "description": "Comprehensive Human Resource Information System for DepEd SDO Laguna, featuring automated recruitment workflows, 201 files management, and plantilla tracking.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
