@@ -115,16 +115,32 @@ export default function Records() {
     setTimeout(() => setIsExportLoading(false), 1500);
   };
 
+  const [plantillaData, setPlantillaData] = useState<PlantillaRecord[]>([]);
+  const [nonPlantillaData, setNonPlantillaData] = useState<NonPlantillaRecord[]>([]);
+
   useEffect(() => {
     setLoading(true);
-    // Artificial delay for training/demo purposes to show skeletons
-    const timer = setTimeout(() => {
+    
+    Promise.all([
+      fetch("/api/records/plantilla", { headers: { Accept: "application/json" } }).then(res => res.json().catch(() => ({}))),
+      fetch("/api/records/non-plantilla", { headers: { Accept: "application/json" } }).then(res => res.json().catch(() => ({})))
+    ])
+    .then(([plantilla, nonPlantilla]) => {
+      setPlantillaData(Array.isArray(plantilla?.data) ? plantilla.data : (Array.isArray(plantilla) ? plantilla : []));
+      setNonPlantillaData(Array.isArray(nonPlantilla?.data) ? nonPlantilla.data : (Array.isArray(nonPlantilla) ? nonPlantilla : []));
+    })
+    .catch(err => {
+      console.error(err);
+      toast.error("Failed to fetch records");
+      setPlantillaData([]);
+      setNonPlantillaData([]);
+    })
+    .finally(() => {
       setLoading(false);
-    }, 1000);
-    return () => clearTimeout(timer);
+    });
   }, []);
 
-  if (user?.role !== "hrmo" && user?.role !== "records") {
+  if (user?.role !== "hrmo" && user?.role !== "records" && user?.role !== "Super Admin") {
     return (
       <div className="flex flex-col items-center justify-center h-full w-full bg-slate-50/50 rounded-[20px] border border-slate-200/80 p-6 shadow-sm text-center">
         <div className="w-20 h-20 bg-rose-50 text-rose-600 rounded-full flex items-center justify-center mb-6 shadow-sm border border-rose-100 mx-auto">
@@ -141,95 +157,9 @@ export default function Records() {
     );
   }
 
-  // Plantilla Mock Data
-  const plantillaData: PlantillaRecord[] = [
-    {
-      id: "1",
-      positionStatus: "Filled",
-      itemNumber: "OSEC-DECSB-TCH1-540001-2012",
-      reclassification: "NO",
-      previousItemNumber: "N/A",
-      positionParenthetical: "Teacher I",
-      employeeNumber: "6340129",
-      lastName: "DELA CRUZ",
-      givenName: "JUAN",
-      middleName: "REYES",
-      suffix: "",
-      fullName: "DELA CRUZ, JUAN REYES",
-      sex: "MALE",
-      dob: "1985-05-15",
-      originalAppointment: "2012-06-01",
-      dateLastPromotion: "2018-09-12",
-      eligibility: "LET PASSER",
-      tin: "123-456-789",
-      schoolId: "108234",
-      schoolName: "Laguna National High School",
-      actualDeploymentSchoolId: "108234",
-      actualDeploymentRoSdo: "SDO Laguna",
-      taggingOfItem: "Regular",
-      dateOfVacancy: "N/A"
-    },
-    {
-      id: "2",
-      positionStatus: "Unfilled",
-      itemNumber: "OSEC-DECSB-ADA3-540022-2015",
-      reclassification: "NO",
-      previousItemNumber: "N/A",
-      positionParenthetical: "Administrative Assistant III",
-      employeeNumber: "N/A",
-      lastName: "N/A",
-      givenName: "N/A",
-      middleName: "N/A",
-      suffix: "",
-      fullName: "VACANT",
-      sex: "MALE",
-      dob: "N/A",
-      originalAppointment: "N/A",
-      dateLastPromotion: "N/A",
-      eligibility: "N/A",
-      tin: "N/A",
-      schoolId: "108235",
-      schoolName: "Pila Central School",
-      actualDeploymentSchoolId: "108235",
-      actualDeploymentRoSdo: "SDO Laguna",
-      taggingOfItem: "Regular",
-      dateOfVacancy: "2023-01-10",
-      periodDormant: "14 Months",
-      reasonUnfilled: "Ongoing Recruitment",
-      remarks: "Candidates in selection process"
-    }
-  ];
-
-  // Non-Plantilla Mock Data
-  const nonPlantillaData: NonPlantillaRecord[] = [
-    {
-      id: "1",
-      no: 1,
-      officeAssignment: "OSDS - Personnel",
-      schoolId: "SDO-LAG-001",
-      schoolName: "SDO Laguna Main",
-      itemNumber: "COS-2024-001",
-      employeeNumber: "COS-634001",
-      lastName: "MERCADO",
-      givenName: "MARIA",
-      middleName: "SANTOS",
-      suffix: "",
-      fullName: "MERCADO, MARIA SANTOS",
-      dob: "1994-11-20",
-      sex: "FEMALE",
-      firstDayOfService: "2024-01-03",
-      yearsInService: 0.5,
-      contractDuration: "6 Months",
-      statusOfEngagement: "Contract of Services",
-      natureOfWork: "Administrative Support",
-      monthlySalary: "18,500.00",
-      sourceOfFunds: "PS-Budget"
-    }
-  ];
-
   const filteredData = typeFilter === "plantilla" 
-    ? plantillaData.filter(d => d.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || d.itemNumber.toLowerCase().includes(searchTerm.toLowerCase()))
-    : nonPlantillaData.filter(d => d.fullName.toLowerCase().includes(searchTerm.toLowerCase()) || d.employeeNumber.toLowerCase().includes(searchTerm.toLowerCase()));
+    ? plantillaData.filter(d => (d.fullName || "").toLowerCase().includes(searchTerm.toLowerCase()) || (d.itemNumber || "").toLowerCase().includes(searchTerm.toLowerCase()))
+    : nonPlantillaData.filter(d => (d.fullName || "").toLowerCase().includes(searchTerm.toLowerCase()) || (d.employeeNumber || "").toLowerCase().includes(searchTerm.toLowerCase()));
 
   return (
     <div className="space-y-6 h-full flex flex-col w-full max-w-7xl mx-auto">
@@ -332,9 +262,43 @@ export default function Records() {
 
         <div className="flex-1 overflow-auto bg-white min-h-0 custom-scrollbar">
           {loading ? (
-             <div className="space-y-4 p-6 animate-pulse">
-               {[1,2,3,4,5].map(i => <div key={i} className="h-16 bg-slate-50 rounded-xl border border-slate-100"></div>)}
-             </div>
+             <table className="w-full text-left text-sm whitespace-nowrap border-separate border-spacing-0 fade-in duration-300">
+               <thead className="bg-[#fcfdfd] sticky top-0 z-10 border-b border-slate-200">
+                 <tr>
+                   <th className="px-4 py-3.5 w-10 bg-[#f8f9fa]">
+                     <Skeleton className="w-4 h-4 rounded" />
+                   </th>
+                   <th className="px-6 py-4"><Skeleton className="h-3 w-32 rounded-md" /></th>
+                   <th className="px-6 py-4"><Skeleton className="h-3 w-40 rounded-md" /></th>
+                   <th className="px-6 py-4"><Skeleton className="h-3 w-24 rounded-md" /></th>
+                   <th className="px-6 py-4"><Skeleton className="h-3 w-16 rounded-md ml-auto" /></th>
+                 </tr>
+               </thead>
+               <tbody className="divide-y divide-slate-100">
+                 {Array.from({ length: 8 }).map((_, i) => (
+                   <tr key={i}>
+                     <td className="px-4 py-4 text-center">
+                       <Skeleton className="w-4 h-4 rounded mx-auto" />
+                     </td>
+                     <td className="px-6 py-4 space-y-2">
+                       <Skeleton className="h-4 w-32 rounded-md" />
+                       <Skeleton className="h-3 w-48 rounded-md opacity-60" />
+                     </td>
+                     <td className="px-6 py-4 space-y-2">
+                       <Skeleton className="h-4 w-40 rounded-md" />
+                       <Skeleton className="h-3 w-24 rounded-md opacity-60" />
+                     </td>
+                     <td className="px-6 py-4">
+                       <Skeleton className="h-6 w-20 rounded-full" />
+                     </td>
+                     <td className="px-6 py-4 flex justify-end gap-2">
+                       <Skeleton className="w-8 h-8 rounded-lg" />
+                       <Skeleton className="w-8 h-8 rounded-lg" />
+                     </td>
+                   </tr>
+                 ))}
+               </tbody>
+             </table>
           ) : (
             <table className="w-full text-left text-sm whitespace-nowrap border-separate border-spacing-0">
               <thead className="bg-[#fcfdfd] sticky top-0 z-10 border-b border-slate-200">

@@ -235,7 +235,7 @@ export default function Vacancies() {
         return res.json();
       })
       .then((data) => {
-        setVacancies(data || []);
+        setVacancies(Array.isArray(data?.data) ? data.data : (Array.isArray(data) ? data : []));
         setLoading(false);
       })
       .catch((err) => {
@@ -295,17 +295,20 @@ export default function Vacancies() {
   return (
     <div className="space-y-8 h-full flex flex-col w-full max-w-7xl mx-auto animate-in fade-in duration-300">
       {loading ? (
-        <div className="space-y-6 flex flex-col h-full">
+        <div className="space-y-6 flex flex-col h-full fade-in duration-300">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0 sm:mt-2">
-            <div className="space-y-2">
-              <Skeleton className="h-9 w-48 rounded-xl shadow-sm" />
-              <Skeleton className="h-4.5 w-64 rounded-lg opacity-60" />
+            <div className="space-y-2.5">
+              <Skeleton className="h-8 w-48 rounded-xl shadow-sm" />
+              <Skeleton className="h-4 w-72 rounded-lg opacity-60" />
             </div>
-            <Skeleton className="h-11 w-40 rounded-xl shadow-sm" />
+            {user?.role === "hrmo" && (
+              <Skeleton className="h-[44px] w-44 rounded-lg shadow-sm" />
+            )}
           </div>
-          <div className="bg-white rounded-[20px] border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] overflow-hidden flex-1 flex flex-col">
-            <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex justify-center">
-              <Skeleton className="h-12 w-full max-w-2xl rounded-2xl shadow-sm" />
+          <div className="glass-card flex-1 flex flex-col overflow-hidden shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] rounded-[20px] bg-white">
+            <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-center items-center gap-6 shrink-0 bg-slate-50">
+              <Skeleton className="h-[52px] w-full max-w-2xl rounded-2xl shadow-sm" />
+              <Skeleton className="h-[52px] w-full sm:w-44 rounded-2xl shadow-sm" />
             </div>
             <div className="p-6 bg-slate-50/20 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {Array.from({ length: 6 }).map((_, i) => (

@@ -12,7 +12,7 @@ class RecordsController extends \App\Http\Controllers\Controller
     {
         $records = Employee::with('plantillaItem')
             ->where('employment_type', EmploymentType::Plantilla)
-            ->get();
+            ->paginate(25);
 
         return response()->json($records);
     }
@@ -20,7 +20,7 @@ class RecordsController extends \App\Http\Controllers\Controller
     public function nonPlantilla(): JsonResponse
     {
         $records = Employee::where('employment_type', EmploymentType::NonPlantilla)
-            ->get();
+            ->paginate(25);
 
         return response()->json($records);
     }

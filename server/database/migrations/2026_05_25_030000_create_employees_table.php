@@ -26,6 +26,16 @@ return new class extends Migration
             $table->string('station_id')->nullable();
             $table->string('nature_of_work')->nullable();
             $table->decimal('monthly_salary', 10, 2)->nullable();
+            
+            // New columns aligned with Register.tsx
+            $table->date('original_appointment_date')->nullable();
+            $table->date('last_promotion_date')->nullable();
+            $table->string('appointment_status')->nullable(); // Permanent, Temporary, etc.
+            $table->date('first_day_of_service')->nullable();
+            $table->string('status_of_engagement')->nullable(); // JO, Contractual, etc.
+            $table->string('contract_duration')->nullable();
+            $table->string('source_of_funds')->nullable();
+            
             $table->string('pds_file_path')->nullable();
             $table->string('oath_of_office_file_path')->nullable();
             $table->string('assumption_of_duty_file_path')->nullable();

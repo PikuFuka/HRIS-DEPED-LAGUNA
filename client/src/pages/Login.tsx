@@ -43,7 +43,7 @@ export default function Login() {
     }
     setLoading(true);
     try {
-      await login(username.trim().toLowerCase());
+      await login(username.trim().toLowerCase(), password);
       navigate("/", { replace: true });
     } catch (e) {
       setErrorMsg("Login failed. Please check your credentials.");
@@ -56,8 +56,8 @@ export default function Login() {
     setLoading(true);
     try {
       // Backend OAuth logic will be implemented here
-      // Fallback for UI prototype
-      await login("applicant");
+      // TODO: Implement Google OAuth flow
+      setErrorMsg("Google login is not yet available. Please use email/password.");
       navigate("/", { replace: true });
     } catch (e) {
       alert("Google Login Failed");
@@ -225,7 +225,7 @@ export default function Login() {
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="Rolan123"
+                  placeholder="Enter your password"
                   className="block w-full h-12 px-4 rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:bg-white focus:border-[#0038A8] focus:ring-2 focus:ring-[#0038A8]/20 transition-all sm:text-sm outline-none"
                   autoComplete="current-password"
                 />

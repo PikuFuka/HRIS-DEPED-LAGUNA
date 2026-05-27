@@ -93,6 +93,32 @@ export default function Register() {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      const payload = { ...formData, type: employeeType };
+      const res = await fetch("/api/register-employee", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      
+      if (res.ok) {
+        setCurrentStep("success");
+      } else {
+        const errorData = await res.json();
+        alert("Registration failed: " + (errorData.message || "Please check your inputs."));
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Registration failed. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   const handleNext = () => {
     const steps: Step[] = ["account", "otp", "typeSelection", "school", "personal", "professional", "success"];
     const currentIndex = steps.indexOf(currentStep);
@@ -614,8 +640,12 @@ export default function Register() {
                     <button onClick={handleBack} className="px-8 py-4 bg-slate-50 text-slate-400 rounded-2xl font-bold flex items-center gap-2 hover:bg-slate-100 transition-all">
                       <ChevronLeft className="w-4 h-4" /> Back
                     </button>
-                    <button onClick={handleNext} className="flex-1 py-4 bg-[#0038A8] text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#002B80] transition-all shadow-lg shadow-emerald-900/10">
-                      Complete Registration <ArrowRight className="w-4 h-4" />
+                    <button 
+                      onClick={handleSubmit} 
+                      disabled={isSubmitting}
+                      className="flex-1 py-4 bg-[#0038A8] text-white rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-[#002B80] transition-all shadow-lg shadow-emerald-900/10 disabled:opacity-50"
+                    >
+                      {isSubmitting ? "Submitting..." : "Complete Registration"} <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 </motion.div>

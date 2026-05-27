@@ -36,15 +36,24 @@ export function ApplicationSkeleton() {
 
 export function CardSkeleton() {
   return (
-    <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm space-y-5">
-      <div className="flex items-center gap-4">
-        <Skeleton variant="circular" className="w-12 h-12 shadow-sm" />
-        <div className="space-y-2.5 flex-1">
-          <Skeleton variant="text" className="w-1/2 h-4" />
-          <Skeleton variant="text" className="w-1/4 h-3 opacity-60" />
-        </div>
+    <div className="bg-white p-6 rounded-[20px] border border-slate-200/80 shadow-sm space-y-6">
+      <div className="flex justify-between items-start gap-4">
+        <Skeleton variant="circular" className="w-12 h-12 shadow-sm shrink-0" />
+        <Skeleton className="w-24 h-6 rounded-full" />
       </div>
-      <Skeleton className="h-28 w-full rounded-2xl shadow-sm" />
+      <div className="space-y-2.5">
+        <Skeleton className="w-3/4 h-5 rounded-lg" />
+        <Skeleton className="w-1/2 h-3 opacity-60 rounded-lg" />
+        <Skeleton className="w-1/3 h-3 opacity-60 rounded-lg" />
+      </div>
+      <div className="grid grid-cols-2 gap-3 pt-2">
+        <Skeleton className="w-full h-8 rounded-lg" />
+        <Skeleton className="w-full h-8 rounded-lg" />
+      </div>
+      <div className="pt-4 border-t border-slate-100 flex gap-3">
+        <Skeleton className="flex-1 h-10 rounded-xl" />
+        <Skeleton className="flex-1 h-10 rounded-xl" />
+      </div>
     </div>
   );
 }

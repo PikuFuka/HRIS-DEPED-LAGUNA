@@ -52,7 +52,7 @@ const ROLE_NAVIGATION: Record<
     {
       to: "/applications",
       icon: <FileText className="w-[18px] h-[18px]" />,
-      label: "Workflow Tracker", // Steps 3-13
+      label: "Application Tracker", // Steps 3-13
     },
     {
       to: "/registers",

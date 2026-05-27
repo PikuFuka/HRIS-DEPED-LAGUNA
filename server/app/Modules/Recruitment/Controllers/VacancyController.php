@@ -9,7 +9,7 @@ class VacancyController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        return response()->json(Vacancy::with('plantillaItem')->get());
+        return response()->json(Vacancy::with('plantillaItem')->paginate(25));
     }
 
     public function show(Vacancy $vacancy)

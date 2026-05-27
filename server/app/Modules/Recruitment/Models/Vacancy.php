@@ -2,6 +2,7 @@
 
 namespace App\Modules\Recruitment\Models;
 
+use App\Modules\Personnel\Models\PlantillaItem;
 use Illuminate\Database\Eloquent\Model;
 
 class Vacancy extends Model

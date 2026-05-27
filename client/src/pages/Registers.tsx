@@ -31,126 +31,74 @@ export default function Registers() {
   const [loading, setLoading] = useState(true);
   const [selectedItem, setSelectedItem] = useState<ItemRecord | null>(null);
 
-  // Mock Item Data
-  const itemData: ItemRecord[] = [
-    {
-      id: "ITM-001",
-      itemNo: "OSEC-DECSB-T1-120001-1998",
-      position: "Teacher I",
-      type: "plantilla",
-      salaryGrade: "11",
-      status: "Filled",
-      department: "Elementary School Unit",
-      history: [
-        { date: "1998-06-01", action: "Item Created", details: "Plantilla item established under OSEC DECSB.", status: "completed" },
-        { date: "2015-08-15", action: "Occupied", details: "Appointment issued to Juan Dela Cruz.", occupant: "Juan Dela Cruz", status: "completed" },
-        { date: "2020-11-30", action: "Vacated", details: "Juan Dela Cruz promoted to Teacher III.", occupant: "Juan Dela Cruz", status: "completed" },
-        { date: "2021-02-01", action: "Occupied", details: "Appointment issued to Maria Santos.", occupant: "Maria Santos", status: "current" },
-      ]
-    },
-    {
-      id: "ITM-002",
-      itemNo: "OSEC-DECSB-T3-120045-1998",
-      position: "Teacher III",
-      type: "plantilla",
-      salaryGrade: "13",
-      status: "Vacant",
-      department: "Secondary School Unit",
-      history: [
-        { date: "1998-06-01", action: "Item Created", details: "Plantilla item established under OSEC DECSB.", status: "completed" },
-        { date: "2010-04-12", action: "Occupied", details: "Appointment issued to Pedro Penduko.", occupant: "Pedro Penduko", status: "completed" },
-        { date: "2023-12-31", action: "Vacated", details: "Pedro Penduko retired from service.", occupant: "Pedro Penduko", status: "current" }
-      ]
-    },
-    {
-      id: "ITM-003",
-      itemNo: "Contract of Service (COS)",
-      position: "Administrative Assistant I",
-      type: "non-plantilla",
-      salaryGrade: "7",
-      status: "Filled",
-      department: "Office of the Director",
-      history: [
-        { date: "2024-01-01", action: "Contract Initiated", details: "COS created for 6 months.", status: "completed" },
-        { date: "2024-01-15", action: "Occupied", details: "Contract signed by Ana Reyes.", occupant: "Ana Reyes", status: "current" },
-      ]
-    },
-    {
-      id: "ITM-004",
-      itemNo: "Job Order (JO)",
-      position: "Security Guard",
-      type: "non-plantilla",
-      salaryGrade: "4",
-      status: "Vacant",
-      department: "General Services Division",
-      history: [
-        { date: "2023-01-01", action: "JO Initiated", details: "Job Order created for FY 2023.", status: "completed" },
-        { date: "2023-02-01", action: "Occupied", details: "Assigned to Lito Lapid.", occupant: "Lito Lapid", status: "completed" },
-        { date: "2023-12-31", action: "Vacated", details: "End of contract term.", occupant: "Lito Lapid", status: "completed" },
-        { date: "2024-01-01", action: "JO Renewed", details: "Job Order renewed for FY 2024.", status: "current" }
-      ]
-    },
-    {
-      id: "ITM-005",
-      itemNo: "OSEC-DECSB-MT1-120112-2003",
-      position: "Master Teacher I",
-      type: "plantilla",
-      salaryGrade: "18",
-      status: "Filled",
-      department: "Secondary School Unit",
-      history: [
-        { date: "2003-05-15", action: "Item Created", details: "Reclassified from Teacher III.", status: "completed" },
-        { date: "2003-08-01", action: "Occupied", details: "Appointment issued to Clara Barton.", occupant: "Clara Barton", status: "current" }
-      ]
-    }
-  ];
-
-  const filteredItems = itemData.filter(item => {
-    const matchesSearch = item.itemNo.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                          item.position.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesType = typeFilter === "All" || item.type === typeFilter;
-    return matchesSearch && matchesType;
-  });
+  const [items, setItems] = useState<any[]>([]);
 
   useEffect(() => {
-    setLoading(true);
-    // Artificial delay for skeleton demonstration
-    const timer = setTimeout(() => {
-      setLoading(false);
-    }, 800);
-    return () => clearTimeout(timer);
+    const fetchItems = async () => {
+      setLoading(true);
+      try {
+        const res = await fetch("/api/plantilla-items", {
+          headers: { Accept: "application/json" }
+        });
+        const data = await res.json().catch(() => ({}));
+        if (data && Array.isArray(data.data)) {
+          setItems(data.data);
+        } else if (Array.isArray(data)) {
+          setItems(data);
+        } else {
+          setItems([]);
+        }
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchItems();
   }, []);
+
+  const filteredItems = items.filter(item => {
+    const matchesSearch = item.position_title?.toLowerCase().includes(searchTerm.toLowerCase());
+    const typeStr = item.type === "plantilla" ? "plantilla" : "non-plantilla";
+    const matchesType = typeFilter === "All" || typeStr === typeFilter;
+    return matchesSearch && matchesType;
+  });
 
   return (
     <div className="w-full max-w-7xl mx-auto space-y-6 h-full flex flex-col">
       {loading ? (
-        <div className="space-y-6 flex flex-col h-full">
+        <div className="space-y-6 flex flex-col h-full fade-in duration-300">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shrink-0 sm:mt-2">
-            <Skeleton className="h-8 w-64" />
-            <Skeleton className="h-10 w-32" />
+            <div className="space-y-2.5">
+              <Skeleton className="h-8 w-64 rounded-xl shadow-sm" />
+              <Skeleton className="h-4 w-72 rounded-lg opacity-60" />
+            </div>
+            <Skeleton className="h-[42px] w-32 rounded-xl shadow-sm" />
           </div>
-          <div className="flex-1 bg-white rounded-[20px] border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
-             <div className="p-6 md:p-8 border-b border-slate-100 flex justify-center bg-slate-50">
-               <Skeleton className="h-12 w-full max-w-2xl rounded-2xl" />
+          <div className="flex-1 rounded-[20px] bg-white border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
+             <div className="p-6 md:p-8 border-b border-slate-100 flex flex-col sm:flex-row justify-between items-center gap-6 shrink-0 bg-slate-50">
+               <Skeleton className="h-[52px] w-full max-w-lg rounded-2xl shadow-sm" />
+               <Skeleton className="h-[48px] w-full sm:w-[280px] rounded-2xl shadow-sm" />
              </div>
              <div className="flex-1 overflow-auto p-0">
                <table className="w-full text-left text-sm border-separate border-spacing-0">
                  <thead>
-                  <tr className="bg-slate-50 border-b border-slate-100">
-                    {Array.from({ length: 6 }).map((_, i) => (
-                      <th key={i} className="px-6 py-4"><Skeleton className="h-4 w-24" /></th>
+                  <tr className="bg-[#fcfdfd] border-b border-slate-200 shadow-sm">
+                    {Array.from({ length: 5 }).map((_, i) => (
+                      <th key={i} className="px-6 py-4"><Skeleton className="h-4 w-24 rounded-md" /></th>
                     ))}
                   </tr>
                  </thead>
                  <tbody className="divide-y divide-slate-100">
                    {Array.from({ length: 8 }).map((_, i) => (
                      <tr key={i}>
-                       <td className="px-6 py-5"><Skeleton className="h-4 w-40" /></td>
-                       <td className="px-6 py-5"><Skeleton className="h-4 w-32" /></td>
-                       <td className="px-6 py-5"><Skeleton className="h-4 w-24 rounded-full" /></td>
-                       <td className="px-6 py-5"><Skeleton className="h-4 w-16" /></td>
-                       <td className="px-6 py-5"><Skeleton className="h-6 w-20 rounded-md" /></td>
-                       <td className="px-6 py-5"><Skeleton className="h-8 w-8 rounded-md ml-auto" /></td>
+                       <td className="px-6 py-5"><Skeleton className="h-5 w-40 rounded-lg" /></td>
+                       <td className="px-6 py-5"><Skeleton className="h-5 w-32 rounded-lg" /></td>
+                       <td className="px-6 py-5"><Skeleton className="h-6 w-24 rounded-full" /></td>
+                       <td className="px-6 py-5"><Skeleton className="h-5 w-16 rounded-lg" /></td>
+                       <td className="px-6 py-5 flex justify-end gap-2">
+                         <Skeleton className="h-8 w-8 rounded-lg" />
+                       </td>
                      </tr>
                    ))}
                  </tbody>
@@ -169,7 +117,7 @@ export default function Registers() {
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
                 <h2 className="text-xl md:text-2xl font-bold text-slate-900 tracking-tight">
-                  Item Numbers Register
+                  Registers
                 </h2>
                 <p className="text-sm text-slate-500 mt-1 font-medium">Comprehensive list of Plantilla and Non-Plantilla items</p>
               </div>
@@ -190,7 +138,7 @@ export default function Registers() {
                 </div>
                 <input
                   type="text"
-                  placeholder="Search item number or position..."
+                  placeholder="Search position..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="w-full pl-15 pr-6 py-3.5 bg-white border-2 border-slate-100 rounded-2xl text-base font-semibold shadow-sm focus:outline-none focus:border-[#0038A8]/30 focus:ring-8 focus:ring-[#0038A8]/5 transition-all placeholder:text-slate-400"
@@ -228,7 +176,6 @@ export default function Registers() {
               <table className="w-full text-left text-sm whitespace-nowrap border-separate border-spacing-0">
                 <thead className="bg-[#fcfdfd] sticky top-0 z-10 border-b border-slate-200 shadow-sm">
                   <tr className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.15em] font-sans">
-                    <th className="px-6 py-4">Item Number</th>
                     <th className="px-6 py-4">Position</th>
                     <th className="px-6 py-4">Type</th>
                     <th className="px-6 py-4">Salary Grade</th>
@@ -244,17 +191,10 @@ export default function Registers() {
                         onClick={() => setSelectedItem(item)}
                         className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
                       >
-                        <td className="px-6 py-4 text-[13px] font-bold text-slate-800 tracking-tighter">
-                          {item.type === "non-plantilla" ? (
-                            <span className="text-slate-500 font-sans">{item.itemNo}</span>
-                          ) : (
-                            <span className="font-mono">{item.itemNo}</span>
-                          )}
-                        </td>
                         <td className="px-6 py-4">
-                          <div className="font-bold text-slate-900 tracking-tight text-[13px]">{item.position}</div>
+                          <div className="font-bold text-slate-900 tracking-tight text-[13px]">{item.position_title}</div>
                           <div className="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-0.5">
-                            {item.department}
+                            {item.school_name || item.office_assignment || "N/A"}
                           </div>
                         </td>
                         <td className="px-6 py-4">
@@ -267,7 +207,7 @@ export default function Registers() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                           <span className="font-bold text-slate-600">SG {item.salaryGrade}</span>
+                           <span className="font-bold text-slate-600">SG {item.salary_grade}</span>
                         </td>
                         <td className="px-6 py-4">
                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider inline-block border ${
@@ -294,13 +234,13 @@ export default function Registers() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="px-6 py-32 whitespace-normal text-center">
+                      <td colSpan={5} className="px-6 py-32 whitespace-normal text-center">
                         <div className="flex flex-col items-center justify-center max-w-md mx-auto">
                           <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center mb-6 border border-slate-100 shadow-inner">
-                            <Hash className="w-10 h-10 text-slate-200" />
+                            <Briefcase className="w-10 h-10 text-slate-200" />
                           </div>
                           <h3 className="text-xl font-black text-slate-900 tracking-tight uppercase tracking-widest mb-2">No Items Found</h3>
-                          <p className="text-sm text-slate-500 leading-relaxed font-medium">There are currently no item numbers matching your search criteria.</p>
+                          <p className="text-sm text-slate-500 leading-relaxed font-medium">There are currently no items matching your search criteria.</p>
                         </div>
                       </td>
                     </tr>
@@ -334,11 +274,11 @@ export default function Registers() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <h3 className="text-lg font-black text-slate-900 tracking-tight leading-tight uppercase truncate">
-                          {selectedItem.type === "non-plantilla" ? selectedItem.itemNo : selectedItem.itemNo}
+                          {selectedItem.position_title}
                         </h3>
                         <div className="flex items-center gap-2 mt-0.5">
                           <span className="text-[11px] font-bold text-[#0038A8] uppercase tracking-wide">
-                            {selectedItem.position}
+                            {selectedItem.type === "plantilla" ? "Plantilla" : "Non-Plantilla"}
                           </span>
                         </div>
                       </div>
@@ -361,10 +301,10 @@ export default function Registers() {
                       </h4>
                       
                       <div className="relative ml-2 space-y-4">
-                        {selectedItem.history.map((log, idx) => (
+                        {(selectedItem.itemHistories || []).map((log: any, idx: number) => (
                           <div key={idx} className="relative flex gap-4">
                             {/* Vertical Line Connector */}
-                            {idx !== selectedItem.history.length - 1 && (
+                            {idx !== (selectedItem.itemHistories || []).length - 1 && (
                               <div className="absolute left-[13px] top-[24px] h-[calc(100%+8px)] w-[2px] bg-slate-200" />
                             )}
                             
@@ -384,7 +324,7 @@ export default function Registers() {
                                   {log.action}
                                 </p>
                                 <span className="text-[10px] font-bold text-slate-400">
-                                  {log.date}
+                                  {log.date || log.created_at}
                                 </span>
                               </div>
                               <p className="text-xs font-medium text-slate-500 leading-relaxed">

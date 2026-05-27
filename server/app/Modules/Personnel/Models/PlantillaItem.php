@@ -14,6 +14,21 @@ class PlantillaItem extends Model
         'position_title',
         'salary_grade',
         'status',
+        'position_parenthetical',
+        'is_reclassified',
+        'previous_item_number',
+        'tagging_of_item',
+        'step',
+        'authorized_salary',
+        'actual_salary',
+        'code',
+        'type',
+        'level',
+        'attri',
+        'category',
+        'school_id',
+        'school_name',
+        'actual_deployment',
         'employee_id',
         'office_assignment',
     ];
@@ -21,8 +36,12 @@ class PlantillaItem extends Model
     protected function casts(): array
     {
         return [
-            'salary_grade' => 'integer',
-            'status'       => PlantillaStatus::class,
+            'salary_grade'      => 'integer',
+            'status'            => PlantillaStatus::class,
+            'is_reclassified'   => 'boolean',
+            'step'              => 'integer',
+            'authorized_salary' => 'decimal:2',
+            'actual_salary'     => 'decimal:2',
         ];
     }
 

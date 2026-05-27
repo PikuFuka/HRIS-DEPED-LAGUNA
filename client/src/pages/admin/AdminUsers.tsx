@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "../../lib/auth";
 import { Plus, Edit, Trash2 } from "lucide-react";
+import { Skeleton } from "../../components/ui/Skeleton";
 
 export default function AdminUsers() {
   const { user } = useAuth();
@@ -98,26 +99,38 @@ export default function AdminUsers() {
 
   if (loading) {
     return (
-      <div className="p-8 max-w-7xl mx-auto space-y-6 animate-pulse">
+      <div className="p-8 max-w-7xl mx-auto space-y-6 fade-in duration-300">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-3">
-            <div className="h-8 w-64 bg-slate-200/60 rounded-xl"></div>
-            <div className="h-4 w-96 bg-slate-200/60 rounded-lg"></div>
+          <div className="space-y-2.5">
+            <Skeleton className="h-9 w-64 rounded-xl" />
+            <Skeleton className="h-5 w-80 rounded-md opacity-60" />
           </div>
-          <div className="h-10 w-32 bg-slate-200/60 rounded-xl"></div>
+          <Skeleton className="h-10 w-32 rounded-xl" />
         </div>
-        <div className="bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 p-6">
-          <div className="space-y-4">
-            <div className="h-10 w-full bg-slate-200/60 rounded-xl"></div>
-            {[...Array(5)].map((_, i) => (
-              <div key={i} className="flex gap-4">
-                <div className="h-12 flex-1 bg-slate-100 rounded-xl"></div>
-                <div className="h-12 flex-1 bg-slate-100 rounded-xl"></div>
-                <div className="h-12 flex-1 bg-slate-100 rounded-xl"></div>
-                <div className="h-12 w-24 bg-slate-100 rounded-xl"></div>
-              </div>
-            ))}
-          </div>
+        <div className="bg-white/80 backdrop-blur-xl rounded-3xl overflow-hidden shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-200/60 p-0">
+           <table className="w-full text-left text-sm whitespace-nowrap">
+             <thead className="border-b border-slate-200/80 bg-slate-50/80">
+               <tr>
+                 <th className="px-6 py-5"><Skeleton className="h-3 w-20 rounded-md" /></th>
+                 <th className="px-6 py-5"><Skeleton className="h-3 w-20 rounded-md" /></th>
+                 <th className="px-6 py-5"><Skeleton className="h-3 w-20 rounded-md" /></th>
+                 <th className="px-6 py-5 flex justify-end"><Skeleton className="h-3 w-20 rounded-md" /></th>
+               </tr>
+             </thead>
+             <tbody className="divide-y divide-slate-100/80">
+               {[...Array(5)].map((_, i) => (
+                 <tr key={i}>
+                   <td className="px-6 py-4"><Skeleton className="h-5 w-40 rounded-lg" /></td>
+                   <td className="px-6 py-4"><Skeleton className="h-5 w-48 rounded-lg" /></td>
+                   <td className="px-6 py-4"><Skeleton className="h-6 w-24 rounded-full" /></td>
+                   <td className="px-6 py-4 flex justify-end gap-3">
+                     <Skeleton className="w-8 h-8 rounded-xl" />
+                     <Skeleton className="w-8 h-8 rounded-xl" />
+                   </td>
+                 </tr>
+               ))}
+             </tbody>
+           </table>
         </div>
       </div>
     );

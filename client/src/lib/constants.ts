@@ -85,7 +85,7 @@ export const WORKFLOW_STEPS = [
   },
   {
     step: 13,
-    title: "CSC Field Office",
+    title: "CSC Office",
     phase: "Phase 4",
     role: "csc",
     action: "Act on Appointment",

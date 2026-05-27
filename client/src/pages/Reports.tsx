@@ -25,74 +25,7 @@ const FILLED_COLOR  = "#3b82f6";
 const UNFILLED_COLOR = "#f43f5e";
 
 // ─── Demo data ────────────────────────────────────────────────────────────
-const DEMO = {
-  region: "Region IV-A",
-  division: "Division of Laguna",
-  completionRate: 87.4,
-  validationSummary: [
-    { field: "Full Name",                  total: 1200, matched: 1180, mismatched: 20,  verified: 1180, unverified: 20 },
-    { field: "Position Status",            total: 1200, matched: 1195, mismatched: 5,   verified: 1195, unverified: 5  },
-    { field: "Sex at Birth",               total: 1200, matched: 1200, mismatched: 0,   verified: 1200, unverified: 0  },
-    { field: "Date of Birth",              total: 1200, matched: 1150, mismatched: 50,  verified: 1150, unverified: 50 },
-    { field: "Date of Original Appointment", total: 1200, matched: 1100, mismatched: 100, verified: 1100, unverified: 100},
-    { field: "Date of Last Promotion",     total: 1200, matched: 1080, mismatched: 120, verified: 1080, unverified: 120},
-    { field: "Eligibility",                total: 1200, matched: 1190, mismatched: 10,  verified: 1190, unverified: 10 },
-    { field: "Tax Identification Number",  total: 1200, matched: 1160, mismatched: 40,  verified: 1160, unverified: 40 },
-  ],
-  personnel: { depEdPlantilla: 950, nonDepEdPlantilla: 250, grandTotal: 1200 },
-  filledByCategory: [
-    { category: "Teaching",          filled: 580, unfilled: 120 },
-    { category: "Teaching-Related",  filled: 210, unfilled: 40  },
-    { category: "Non-Teaching",      filled: 160, unfilled: 90  },
-  ],
-  filledByTagging: [
-    { tag: "Permanent",                filled: 720, unfilled: 130 },
-    { tag: "Coterminous Appointment",  filled: 150, unfilled: 60  },
-    { tag: "Coterminous to Incumbent", filled: 80,  unfilled: 60  },
-  ],
-  deployment: [
-    { category: "Teaching",         within: 560, outside: 20 },
-    { category: "Teaching-Related", within: 200, outside: 10 },
-    { category: "Non-Teaching",     within: 145, outside: 15 },
-  ],
-  ageBracket: [
-    { category: "Teaching",         "Below 30": 95,  "30–39": 230, "40–49": 180, "50–59": 120, "60+": 75 },
-    { category: "Teaching-Related", "Below 30": 30,  "30–39": 80,  "40–49": 60,  "50–59": 45,  "60+": 35 },
-    { category: "Non-Teaching",     "Below 30": 25,  "30–39": 65,  "40–49": 55,  "50–59": 40,  "60+": 65 },
-  ],
-  yearsInService: [
-    { category: "Teaching",         "<1yr": 40,  "1–3yrs": 120, "4–6yrs": 200, ">7yrs": 340 },
-    { category: "Teaching-Related", "<1yr": 20,  "1–3yrs": 55,  "4–6yrs": 80,  ">7yrs": 95  },
-    { category: "Non-Teaching",     "<1yr": 15,  "1–3yrs": 45,  "4–6yrs": 70,  ">7yrs": 120 },
-  ],
-  unfilledReasons: [
-    { reason: "Awaiting CSC Attestations",                    total: 45 },
-    { reason: "Coterminous to Incumbent (CTI) Item",          total: 12 },
-    { reason: "Hard to Fill Position",                        total: 30 },
-    { reason: "Item is Already Filled-Up",                    total: 8  },
-    { reason: "Item is Reposted",                             total: 22 },
-    { reason: "Not Applicable",                               total: 5  },
-    { reason: "Natural Vacancy",                              total: 60 },
-    { reason: "On-Going Hiring Process (1st Posting Only)",   total: 35 },
-    { reason: "Waiving of Items Under Special Hiring Arrangement", total: 10 },
-    { reason: "Other Reasons",                                total: 23 },
-  ],
-  vacancyInYears: [
-    { category: "Teaching",         "<1yr": 25, "1–3yrs": 45, "4–6yrs": 30, ">7yrs": 20 },
-    { category: "Teaching-Related", "<1yr": 10, "1–3yrs": 15, "4–6yrs": 10, ">7yrs": 5  },
-    { category: "Non-Teaching",     "<1yr": 20, "1–3yrs": 30, "4–6yrs": 25, ">7yrs": 15 },
-  ],
-  byPositionTitle: [
-    { title: "Teacher I",                filled: 320, unfilled: 40 },
-    { title: "Teacher II",               filled: 120, unfilled: 20 },
-    { title: "Teacher III",              filled: 140, unfilled: 15 },
-    { title: "Head Teacher I",           filled: 60,  unfilled: 10 },
-    { title: "Education Program Spec I", filled: 45,  unfilled: 8  },
-    { title: "School Principal I",       filled: 55,  unfilled: 12 },
-    { title: "Administrative Officer II",filled: 40,  unfilled: 15 },
-    { title: "Utility Worker I",         filled: 80,  unfilled: 30 },
-  ],
-};
+
 
 // ─── Component helpers ───────────────────────────────────────────────────
 
@@ -132,12 +65,26 @@ export default function Reports() {
   const [timeRange, setTimeRange] = useState("This Year");
   const [loading, setLoading] = useState(true);
   const [activeSection, setActiveSection] = useState("full");
-  const data = DEMO;
+  const [data, setData] = useState<any>(null);
 
   useEffect(() => {
     setLoading(true);
-    const t = setTimeout(() => setLoading(false), 900);
-    return () => clearTimeout(t);
+    fetch("/api/analytics", {
+      headers: {
+        "Accept": "application/json",
+        "Authorization": `Bearer ${localStorage.getItem("token")}`
+      }
+    })
+      .then(res => res.json())
+      .then(json => {
+        setData(json);
+        setLoading(false);
+      })
+      .catch(e => {
+        console.error(e);
+        toast.error("Failed to load analytics");
+        setLoading(false);
+      });
   }, [timeRange]);
 
   if (
@@ -189,9 +136,9 @@ export default function Reports() {
             Data Analysis Report
           </h2>
           <div className="flex items-center gap-2 text-sm font-medium text-slate-500">
-            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md font-bold">{data.region}</span>
+            <span className="px-2.5 py-1 bg-indigo-50 text-indigo-700 rounded-md font-bold">{data?.region || "Loading..."}</span>
             <ChevronRight className="w-4 h-4 text-slate-300" />
-            <span>{data.division}</span>
+            <span>{data?.division || ""}</span>
           </div>
         </div>
         <div className="flex flex-wrap items-center gap-3 w-full lg:w-auto">
@@ -225,11 +172,25 @@ export default function Reports() {
         </div>
       </div>
 
-      {loading ? (
-        <div className="space-y-8">
-          <Skeleton className="h-40 w-full rounded-3xl" />
-          <Skeleton className="h-[500px] w-full rounded-3xl" />
-          <Skeleton className="h-[400px] w-full rounded-3xl" />
+      {loading || !data ? (
+        <div className="flex flex-col gap-8 fade-in duration-300">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <Skeleton className="h-[144px] md:col-span-2 rounded-[20px] shadow-sm" />
+            <Skeleton className="h-[144px] rounded-[20px] shadow-sm" />
+            <Skeleton className="h-[144px] rounded-[20px] shadow-sm" />
+          </div>
+          <div className="sticky top-0 z-40 bg-slate-50/80 backdrop-blur-xl py-4 -mx-4 px-4 sm:mx-0 sm:px-0 border-b border-slate-200/50 mb-4 flex gap-2.5 overflow-hidden">
+            <Skeleton className="h-[42px] w-[120px] rounded-full shadow-sm" />
+            <Skeleton className="h-[42px] w-[150px] rounded-full shadow-sm" />
+            <Skeleton className="h-[42px] w-[100px] rounded-full shadow-sm" />
+            <Skeleton className="h-[42px] w-[140px] rounded-full shadow-sm" />
+            <Skeleton className="h-[42px] w-[130px] rounded-full shadow-sm" />
+            <Skeleton className="h-[42px] w-[110px] rounded-full shadow-sm" />
+          </div>
+          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
+            <Skeleton className="h-[450px] xl:col-span-2 rounded-[24px] shadow-sm" />
+            <Skeleton className="h-[450px] rounded-[24px] shadow-sm" />
+          </div>
         </div>
       ) : (
         <motion.div

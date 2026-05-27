@@ -26,6 +26,13 @@ class Employee extends Model
         'station_id',
         'nature_of_work',
         'monthly_salary',
+        'original_appointment_date',
+        'last_promotion_date',
+        'appointment_status',
+        'first_day_of_service',
+        'status_of_engagement',
+        'contract_duration',
+        'source_of_funds',
         'pds_file_path',
         'oath_of_office_file_path',
         'assumption_of_duty_file_path',
@@ -35,10 +42,13 @@ class Employee extends Model
     protected function casts(): array
     {
         return [
-            'dob'             => 'date',
-            'sex'             => Sex::class,
-            'employment_type' => EmploymentType::class,
-            'monthly_salary'  => 'decimal:2',
+            'dob'                       => 'date',
+            'original_appointment_date' => 'date',
+            'last_promotion_date'       => 'date',
+            'first_day_of_service'      => 'date',
+            'sex'                       => Sex::class,
+            'employment_type'           => EmploymentType::class,
+            'monthly_salary'            => 'decimal:2',
         ];
     }
 

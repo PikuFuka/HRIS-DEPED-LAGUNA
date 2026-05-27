@@ -2,6 +2,7 @@
 
 namespace App\Modules\Workflow\Models;
 
+use App\Modules\Auth\Models\User;
 use Illuminate\Database\Eloquent\Model;
 
 class WorkflowTask extends Model

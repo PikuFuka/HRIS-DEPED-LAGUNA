@@ -74,8 +74,8 @@ function getHeaders() {
 
 interface AuthContextType {
   user: User | null;
-  login: (email: string, password?: string) => Promise<void>;
-  logout: () => void;
+  login: (email: string, password: string) => Promise<void>;
+  logout: () => Promise<void>;
   isLoading: boolean;
 }
 
@@ -115,7 +115,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     fetchUser().finally(() => setIsLoading(false));
   }, []);
 
-  const login = async (email: string, password = "Rolan123") => {
+  const login = async (email: string, password: string) => {
     try {
       // Sanctum CSRF Initialization
       await fetch("/sanctum/csrf-cookie", { method: "GET", credentials: "same-origin" });
@@ -140,10 +140,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await fetch("/api/logout", {
+        method: "POST",
+        headers: getHeaders(),
+        credentials: "same-origin",
+      });
+    } catch {
+      // Even if the server call fails, clear local state
+    }
     setUser(null);
     localStorage.removeItem("user");
-    // Laravel handles destroying session if we hit /api/logout, but for now we just clear local
   };
 
   return (

@@ -82,7 +82,7 @@ export default function Dashboard() {
         return res.json();
       })
       .then((data) => {
-        setApplications(data || []);
+        setApplications(Array.isArray(data?.data) ? data.data : (Array.isArray(data) ? data : []));
         setLoading(false);
       })
       .catch((err) => {
@@ -183,14 +183,47 @@ export default function Dashboard() {
       />
 
       {loading ? (
-        <div className="flex flex-col gap-6 shrink-0 sm:mt-2">
+        <div className="flex flex-col gap-6 shrink-0 sm:mt-2 fade-in duration-300">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <Skeleton className="h-9 w-64 rounded-xl shadow-sm" />
-            <Skeleton className="h-11 w-40 rounded-xl shadow-sm" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-64 rounded-lg" />
+              <Skeleton className="h-6 w-16 rounded-full" />
+            </div>
+            {user?.role === "hrmo" && (
+              <Skeleton className="h-[44px] w-[180px] rounded-xl shadow-sm" />
+            )}
           </div>
           <StatsSkeleton />
-          <div className="flex-1 min-h-[400px]">
-            <TableSkeleton rows={6} cols={5} />
+          <div className="flex-1 min-h-[400px] xl:col-span-12 flex flex-col overflow-hidden rounded-3xl bg-white/80 backdrop-blur-xl border border-slate-200/60 shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+             <div className="p-6 md:p-10 border-b border-slate-100/80 flex flex-col items-center justify-center bg-transparent relative overflow-hidden">
+               <Skeleton className="h-14 w-full max-w-3xl rounded-[20px]" />
+             </div>
+             <div className="flex-1 overflow-auto bg-transparent p-0">
+               <table className="w-full text-left text-sm border-separate border-spacing-0">
+                 <thead className="bg-slate-50/80 backdrop-blur-md sticky top-0 z-10 border-b border-slate-200/80">
+                   <tr>
+                     <th className="px-5 py-4"><Skeleton className="h-3 w-24 rounded-md" /></th>
+                     <th className="px-5 py-4"><Skeleton className="h-3 w-32 rounded-md" /></th>
+                     <th className="px-5 py-4"><Skeleton className="h-3 w-32 rounded-md" /></th>
+                     <th className="px-5 py-4"><Skeleton className="h-3 w-24 rounded-md" /></th>
+                     <th className="px-5 py-4"><Skeleton className="h-3 w-16 rounded-md ml-auto" /></th>
+                   </tr>
+                 </thead>
+                 <tbody className="divide-y divide-slate-100/80">
+                   {Array.from({ length: 6 }).map((_, i) => (
+                     <tr key={i}>
+                       <td className="px-5 py-4"><Skeleton className="h-5 w-40 rounded-lg" /></td>
+                       <td className="px-5 py-4"><Skeleton className="h-5 w-48 rounded-lg" /></td>
+                       <td className="px-5 py-4"><Skeleton className="h-6 w-32 rounded-lg" /></td>
+                       <td className="px-5 py-4"><Skeleton className="h-5 w-24 rounded-lg" /></td>
+                       <td className="px-5 py-4 flex justify-end gap-2">
+                         <Skeleton className="h-8 w-20 rounded-lg" />
+                       </td>
+                     </tr>
+                   ))}
+                 </tbody>
+               </table>
+             </div>
           </div>
         </div>
       ) : (

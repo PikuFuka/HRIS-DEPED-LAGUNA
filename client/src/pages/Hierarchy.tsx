@@ -68,19 +68,20 @@ export default function Hierarchy() {
       .then(async (res) => {
         // Artificial delay for training/demo purposes to show skeletons
         await new Promise(resolve => setTimeout(resolve, 1000));
-        return res.json();
+        return res.json().catch(() => ({}));
       })
       .then(hierarchyData => {
-        setData(hierarchyData);
+        const safeData = Array.isArray(hierarchyData?.data) ? hierarchyData.data : (Array.isArray(hierarchyData) ? hierarchyData : []);
+        setData(safeData);
         setLoading(false);
         
         // Auto-expand if the user has a specific role
         if (user?.role === 'Supervisor') {
-          const myDistrict = hierarchyData.find((d: District) => d.supervisorId === user.id);
+          const myDistrict = safeData.find((d: District) => d.supervisorId === user.id);
           if (myDistrict) setExpandedDistricts([myDistrict.id]);
         } else if (user?.role === 'Principal') {
-          hierarchyData.forEach((d: District) => {
-            const mySchool = d.schools.find((s: School) => s.principalId === user.id);
+          safeData.forEach((d: District) => {
+            const mySchool = d.schools?.find((s: School) => s.principalId === user.id);
             if (mySchool) {
               setExpandedDistricts([d.id]);
               setExpandedSchools([mySchool.id]);
@@ -161,10 +162,16 @@ export default function Hierarchy() {
       </div>
 
       {loading ? (
-        <div className="space-y-4">
+        <div className="space-y-6 fade-in duration-300">
           {[1, 2, 3].map(i => (
-            <div key={i}>
-              <Skeleton className="h-24 w-full rounded-2xl" />
+            <div key={i} className="bg-white rounded-[24px] border border-slate-200/80 shadow-sm p-6 space-y-4">
+              <div className="flex items-center gap-4">
+                <Skeleton className="w-12 h-12 rounded-2xl shadow-sm shrink-0" />
+                <div className="space-y-2">
+                  <Skeleton className="h-6 w-64 rounded-md" />
+                  <Skeleton className="h-4 w-40 rounded-md opacity-60" />
+                </div>
+              </div>
             </div>
           ))}
         </div>

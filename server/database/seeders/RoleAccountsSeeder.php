@@ -6,29 +6,24 @@ use App\Modules\Auth\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
-class DemoRoleAccountsSeeder extends Seeder
+class RoleAccountsSeeder extends Seeder
 {
     public function run(): void
     {
         $accounts = [
             [
-                'name'  => 'Super Administrator',
-                'email' => 'admin@admin.com',
-                'role'  => 'Super Admin',
-            ],
-            [
                 'name'  => 'HR Officer',
-                'email' => 'hr.officer@hris.test',
+                'email' => 'hrmo@hris.test',
                 'role'  => 'hrmo',
             ],
             [
-                'name'  => 'Clerk',
+                'name'  => 'HR Clerk',
                 'email' => 'clerk@hris.test',
                 'role'  => 'Clerk',
             ],
             [
                 'name'  => 'Records Officer',
-                'email' => 'records.officer@hris.test',
+                'email' => 'records@hris.test',
                 'role'  => 'records',
             ],
             [

@@ -2,6 +2,7 @@
 
 namespace App\Modules\Workflow\Models;
 
+use App\Modules\Personnel\Models\Employee;
 use Illuminate\Database\Eloquent\Model;
 
 class Workflow extends Model

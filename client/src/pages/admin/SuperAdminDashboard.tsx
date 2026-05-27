@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 import { format } from "date-fns";
+import { Skeleton } from "../../components/ui/Skeleton";
 import {
   Activity,
   AlertCircle,
@@ -69,33 +70,49 @@ export default function SuperAdminDashboard() {
 
   if (loading) {
     return (
-      <div className="w-full max-w-7xl mx-auto space-y-6 h-full flex flex-col">
-        <div className="flex items-end justify-between gap-4">
-          <div className="space-y-3">
-            <div className="h-4 w-36 rounded bg-slate-100 animate-pulse" />
-            <div className="h-8 w-72 rounded bg-slate-100 animate-pulse" />
+      <div className="w-full max-w-7xl mx-auto space-y-6 h-full flex flex-col fade-in duration-300">
+        <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+          <div className="space-y-2.5">
+            <Skeleton className="h-4 w-32 rounded-md opacity-60" />
+            <Skeleton className="h-10 w-64 rounded-xl" />
+            <Skeleton className="h-5 w-full max-w-2xl rounded-lg opacity-60" />
           </div>
-          <div className="h-10 w-44 rounded-xl bg-slate-100 animate-pulse" />
+          <div className="flex flex-wrap gap-3">
+            <Skeleton className="h-10 w-36 rounded-xl" />
+            <Skeleton className="h-10 w-32 rounded-xl" />
+          </div>
         </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-5 gap-4">
           {Array.from({ length: 5 }).map((_, index) => (
-            <div key={index} className="rounded-2xl border border-slate-200 bg-white p-5 space-y-3">
-              <div className="h-3 w-20 rounded bg-slate-100 animate-pulse" />
-              <div className="h-8 w-20 rounded bg-slate-100 animate-pulse" />
+            <div key={index} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="space-y-3 flex-1">
+                  <Skeleton className="h-3 w-20 rounded-sm" />
+                  <Skeleton className="h-8 w-24 rounded-lg" />
+                </div>
+                <Skeleton className="w-11 h-11 rounded-xl shrink-0" />
+              </div>
             </div>
           ))}
         </div>
-        <div className="grid lg:grid-cols-2 gap-6">
+        <div className="grid lg:grid-cols-2 gap-6 flex-1 min-h-0">
           <div className="rounded-[20px] border border-slate-200/80 bg-white p-6 space-y-4 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)]">
-            <div className="h-4 w-40 rounded bg-slate-100 animate-pulse" />
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <Skeleton className="h-5 w-32 rounded-md" />
+              <Skeleton className="h-3 w-16 rounded-sm opacity-60" />
+            </div>
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-16 rounded-xl bg-slate-100 animate-pulse" />
+              <Skeleton key={index} className="h-20 rounded-xl w-full" />
             ))}
           </div>
           <div className="rounded-[20px] border border-slate-200/80 bg-white p-6 space-y-4 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)]">
-            <div className="h-4 w-48 rounded bg-slate-100 animate-pulse" />
+            <div className="flex items-center justify-between gap-3 mb-4">
+              <Skeleton className="h-5 w-32 rounded-md" />
+              <Skeleton className="h-3 w-16 rounded-sm opacity-60" />
+            </div>
             {Array.from({ length: 4 }).map((_, index) => (
-              <div key={index} className="h-16 rounded-xl bg-slate-100 animate-pulse" />
+              <Skeleton key={index} className="h-20 rounded-xl w-full" />
             ))}
           </div>
         </div>

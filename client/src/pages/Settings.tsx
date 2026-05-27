@@ -15,32 +15,34 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="w-full max-w-4xl mx-auto space-y-8">
-        <div className="space-y-2">
-          <Skeleton className="h-8 w-48" />
-          <Skeleton className="h-4 w-64 opacity-50" />
+      <div className="w-full max-w-4xl mx-auto space-y-6 md:space-y-8 sm:mt-2 fade-in duration-300">
+        <div className="space-y-2.5">
+          <Skeleton className="h-8 w-48 rounded-lg" />
+          <Skeleton className="h-4 w-64 opacity-60 rounded-md" />
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="space-y-2">
-            <Skeleton className="h-10 w-full rounded-lg" />
-            <Skeleton className="h-10 w-full rounded-lg" />
-            <Skeleton className="h-10 w-full rounded-lg" />
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 md:gap-8">
+          <div className="md:col-span-1 space-y-1">
+            <Skeleton className="h-[42px] w-full rounded-lg" />
+            <Skeleton className="h-[42px] w-full rounded-lg" />
+            <Skeleton className="h-[42px] w-full rounded-lg" />
           </div>
           <div className="md:col-span-3 space-y-6">
-            <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm space-y-6">
-              <div className="space-y-4">
-                <Skeleton className="h-6 w-1/3" />
-                <Skeleton className="h-4 w-1/2 opacity-50" />
+            <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+              <div className="p-5 md:p-6 border-b border-slate-100 space-y-2.5">
+                <Skeleton className="h-6 w-48 rounded-md" />
+                <Skeleton className="h-4 w-64 opacity-60 rounded-md" />
               </div>
-              <div className="space-y-6">
+              <div className="p-5 md:p-6 space-y-6">
                 <div className="space-y-2">
-                  <Skeleton className="h-3 w-20" />
-                  <Skeleton className="h-10 w-full max-w-md rounded-lg" />
+                  <Skeleton className="h-3 w-24 rounded-sm" />
+                  <Skeleton className="h-[42px] w-full max-w-md rounded-lg" />
                 </div>
                 <div className="space-y-2">
-                  <Skeleton className="h-3 w-20" />
-                  <Skeleton className="h-10 w-full max-w-md rounded-lg" />
+                  <Skeleton className="h-3 w-24 rounded-sm" />
+                  <Skeleton className="h-[42px] w-full max-w-md rounded-lg" />
+                  <Skeleton className="h-3 w-64 opacity-60 rounded-sm mt-1.5" />
                 </div>
+                <Skeleton className="h-[42px] w-32 rounded-lg mt-4" />
               </div>
             </div>
           </div>

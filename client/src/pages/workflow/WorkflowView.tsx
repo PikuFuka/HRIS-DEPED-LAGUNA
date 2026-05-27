@@ -128,44 +128,66 @@ export default function WorkflowView() {
       </AnimatePresence>
 
       {loading ? (
-        <div className="space-y-6 flex flex-col h-full animate-pulse">
-          <section className="bg-white p-6 md:p-8 rounded-[20px] border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)]">
-            <div className="flex justify-between items-start mb-10">
-              <div className="space-y-3">
-                <Skeleton className="h-6 w-48 rounded-xl shadow-sm" />
-                <Skeleton className="h-4 w-64 rounded-lg opacity-50" />
+        <div className="space-y-6 flex flex-col h-full fade-in duration-300">
+          <section className="glass-card p-6 md:p-8 shrink-0 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] rounded-[20px] border border-slate-200/80 min-w-0 bg-white">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-3">
+              <div className="space-y-2">
+                <Skeleton className="h-4 w-48 rounded-lg opacity-60" />
+                <Skeleton className="h-5 w-72 rounded-lg" />
               </div>
-              <Skeleton className="h-10 w-40 rounded-xl shadow-sm" />
+              <Skeleton className="h-[34px] w-32 rounded-lg" />
             </div>
-            <div className="flex justify-between gap-4 overflow-hidden">
-              {Array.from({ length: 13 }).map((_, i) => (
-                <div key={i} className="flex flex-col items-center gap-3 shrink-0">
-                  <Skeleton variant="circular" className="w-10 h-10 shadow-sm" />
-                  <Skeleton className="h-3.5 w-14 rounded-lg" />
+            
+            <div className="relative pt-2 pb-6 px-4 flex justify-between items-center overflow-hidden">
+              <div className="absolute h-1.5 bg-slate-100 rounded-full left-10 right-10 top-[26px] z-0"></div>
+              {Array.from({ length: 11 }).map((_, i) => (
+                <div key={i} className="flex flex-col items-center gap-3 shrink-0 z-10">
+                  <Skeleton variant="circular" className="w-10 h-10 shadow-sm border-[3px] border-white" />
+                  <Skeleton className="h-3 w-16 rounded-md opacity-60" />
                 </div>
               ))}
             </div>
           </section>
 
-          <div className="flex-1 flex flex-col lg:flex-row gap-6">
+          <div className="flex-1 flex flex-col lg:flex-row gap-6 overflow-hidden">
             <div className="bg-white flex-1 rounded-[20px] border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] overflow-hidden flex flex-col">
-              <div className="p-6 border-b border-slate-100 bg-slate-50/50 space-y-4">
-                <Skeleton className="h-3.5 w-20 rounded-md" />
-                <Skeleton className="h-9 w-1/3 rounded-xl" />
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                <div className="space-y-2.5">
+                  <Skeleton className="h-4 w-24 rounded-md" />
+                  <Skeleton className="h-7 w-64 rounded-xl" />
+                </div>
+                <div className="flex gap-2">
+                  <Skeleton className="h-10 w-32 rounded-xl" />
+                  <Skeleton className="h-10 w-32 rounded-xl" />
+                </div>
               </div>
-              <div className="p-8 space-y-8">
-                <Skeleton className="h-6.5 w-1/4 rounded-lg" />
-                <Skeleton className="h-4.5 w-full rounded-md" />
-                <div className="grid grid-cols-2 gap-4 mt-8">
-                  <Skeleton className="h-28 w-full rounded-2xl shadow-sm" />
-                  <Skeleton className="h-28 w-full rounded-2xl shadow-sm" />
+              <div className="flex-1 p-6 md:p-8 bg-slate-50/30 overflow-hidden flex gap-6">
+                <div className="w-full max-w-[340px] flex-shrink-0 flex flex-col gap-4">
+                  <Skeleton className="h-12 w-full rounded-2xl shadow-sm" />
+                  <Skeleton className="h-40 w-full rounded-[20px] shadow-sm" />
+                  <Skeleton className="h-32 w-full rounded-[20px] shadow-sm" />
+                </div>
+                <div className="w-full max-w-[340px] flex-shrink-0 flex flex-col gap-4 hidden sm:flex">
+                  <Skeleton className="h-12 w-full rounded-2xl shadow-sm" />
+                  <Skeleton className="h-48 w-full rounded-[20px] shadow-sm" />
+                </div>
+                <div className="w-full max-w-[340px] flex-shrink-0 flex flex-col gap-4 hidden xl:flex">
+                  <Skeleton className="h-12 w-full rounded-2xl shadow-sm" />
+                  <Skeleton className="h-36 w-full rounded-[20px] shadow-sm" />
+                  <Skeleton className="h-40 w-full rounded-[20px] shadow-sm" />
                 </div>
               </div>
             </div>
-            <div className="w-72 bg-white border border-slate-200/80 shadow-sm rounded-2xl p-6 hidden lg:block space-y-8">
-              <Skeleton className="h-28 w-full rounded-2xl shadow-sm" />
-              <Skeleton className="h-28 w-full rounded-2xl shadow-sm" />
-              <Skeleton className="h-52 w-full rounded-2xl shadow-sm" />
+            <div className="w-80 shrink-0 bg-white border border-slate-200/80 shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] rounded-[20px] flex flex-col overflow-hidden hidden lg:flex">
+              <div className="p-6 border-b border-slate-100 bg-slate-50/50">
+                <Skeleton className="h-5 w-32 rounded-md" />
+              </div>
+              <div className="p-6 space-y-6 flex-1 overflow-auto">
+                <Skeleton className="h-24 w-full rounded-2xl shadow-sm" />
+                <Skeleton className="h-24 w-full rounded-2xl shadow-sm" />
+                <Skeleton className="h-24 w-full rounded-2xl shadow-sm" />
+                <Skeleton className="h-24 w-full rounded-2xl shadow-sm" />
+              </div>
             </div>
           </div>
         </div>
