@@ -30,7 +30,20 @@ class RolesAndPermissionsSeeder extends Seeder
             'csc',
             'applicant',
             'adas',
-            'sds'
+            'sds',
+            
+            // Workflow Roles requested by user
+            'HRMO Staff',
+            'Records Staff',
+            'ADAS',
+            'HRMO',
+            'HRMPSB Sub-Committee',
+            'HRMPSB',
+            'ADAS III',
+            'HRMO Staff/ HRMPSB Secretariat',
+            'HRMO / Appointing Authority',
+            'CSC Field Office',
+            'DepEd Records Staff'
         ];
 
         foreach ($roles as $role) {

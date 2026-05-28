@@ -172,11 +172,6 @@ const ROLE_NAVIGATION: Record<
       icon: <Briefcase className="w-[18px] h-[18px]" />,
       label: "Vacancies",
     },
-    {
-      to: "/applications",
-      icon: <FileText className="w-[18px] h-[18px]" />,
-      label: "Workflow Tracker",
-    },
   ],
 };
 

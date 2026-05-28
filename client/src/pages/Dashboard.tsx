@@ -42,6 +42,7 @@ import {
 import { WORKFLOW_STEPS, getStepByNumber } from "../lib/constants";
 import { VacancyDetailsModal } from "../components/VacancyDetailsModal";
 import Reports from "./Reports";
+import { toast } from "sonner";
 
 interface Application {
   id: number;
@@ -147,17 +148,23 @@ export default function Dashboard() {
   const isMasterlist =
     window.location.pathname.includes("/applications") && user?.role === "hrmo";
 
+  const isTableOnlyView = location.pathname.includes("/verification") || location.pathname.includes("/appointments");
+
   const isOverview = location.pathname === "/";
 
   const dashboardTitle = isMasterlist 
     ? "Workflow Tracker" 
-    : isOverview 
-      ? user?.role === "Supervisor"
-        ? "District Management Overview"
-        : user?.role === "Principal"
-          ? "School Personnel Dashboard"
-          : "HR Management Dashboard" 
-      : "Active Task Queue";
+    : location.pathname.includes("/verification")
+      ? "Verification Queue"
+      : location.pathname.includes("/appointments")
+        ? "Appointments Queue"
+        : isOverview 
+          ? user?.role === "Supervisor"
+            ? "District Management Overview"
+            : user?.role === "Principal"
+              ? "School Personnel Dashboard"
+              : "HR Management Dashboard" 
+          : "Active Task Queue";
 
   // Data for the Funnel Chart
   const funnelData = [
@@ -259,7 +266,7 @@ export default function Dashboard() {
               )}
             </div>
 
-            {!isMasterlist &&
+            {!isMasterlist && !isTableOnlyView &&
               (user?.role === "hrmo" ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
                   <StatsCard
@@ -674,14 +681,7 @@ export default function Dashboard() {
                                 if (app.vacancy) {
                                   setSelectedVacancy(app.vacancy);
                                 } else {
-                                  setSelectedVacancy({
-                                    title: app.position,
-                                    itemNo: "ITEM-" + app.id,
-                                    type: "plantilla",
-                                    status: "Published",
-                                    bureauService: "Information and Communications Technology Service",
-                                    divisionUnit: "IT Support Division"
-                                  });
+                                  toast.error("Vacancy details are unavailable for this application.");
                                 }
                               }}
                             >
@@ -760,15 +760,7 @@ export default function Dashboard() {
                             if (app.vacancy) {
                               setSelectedVacancy(app.vacancy);
                             } else {
-                              // Fallback for demo
-                              setSelectedVacancy({
-                                title: app.position,
-                                itemNo: "ITEM-" + app.id,
-                                type: "plantilla",
-                                status: "Published",
-                                bureauService: "Information and Communications Technology Service",
-                                divisionUnit: "IT Support Division"
-                              });
+                              toast.error("Vacancy details are unavailable for this application.");
                             }
                           }}
                           className="flex-1 md:flex-none px-4 py-2 bg-blue-50 text-[#0038A8] hover:bg-blue-100 font-bold rounded-lg text-sm border border-blue-100 transition-colors shadow-sm flex items-center justify-center gap-2"

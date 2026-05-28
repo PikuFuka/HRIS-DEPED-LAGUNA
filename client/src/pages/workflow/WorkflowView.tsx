@@ -650,7 +650,7 @@ function StepContent({
     }
   }, [application?.vacancy?.type]);
 
-  const [docs, setDocs] = useState<WorkflowDocument[]>([]);
+  const docs = application?.documents || [];
 
   if (step === 3 && role === "applicant") {
     const isEditing = role === "applicant" && activeStep === 3;
@@ -685,16 +685,12 @@ function StepContent({
               <p className="text-xs font-medium text-slate-400 mt-1">Submit required files to proceed with the application.</p>
             </div>
           ) : (
-            docs.map((doc) => (
+            docs.map((doc: any) => (
               <DocCard
                 key={doc.id}
-                title={doc.title}
-                date={doc.date}
-                onRemove={
-                  isEditing
-                    ? () => setDocs(docs.filter((d) => d.id !== doc.id))
-                    : undefined
-                }
+                title={doc.document_type || doc.file_path}
+                date={new Date(doc.created_at || new Date()).toLocaleDateString()}
+                onRemove={undefined}
               />
             ))
           )}
@@ -725,16 +721,10 @@ function StepContent({
               Submitted Documents
             </h4>
             <div className="space-y-3">
-              <DocCard title="Application Letter" date="Uploaded Nov 1, 2023" />
-              <DocCard
-                title="Personal Data Sheet (CS Form 212)"
-                date="Uploaded Nov 1, 2023"
-              />
-              <DocCard
-                title="Transcript of Records"
-                date="Uploaded Nov 1, 2023"
-              />
-              <DocCard title="PRC License" date="Uploaded Nov 1, 2023" />
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
             </div>
           </div>
 
@@ -877,15 +867,9 @@ function StepContent({
                 <p className="text-[12px] font-semibold text-slate-700">
                   Verified Documents:
                 </p>
-                <DocCard
-                  title="Personal Data Sheet (CS Form 212)"
-                  date="Verified by Records"
-                />
-                <DocCard
-                  title="Transcript of Records"
-                  date="Verified by Records"
-                />
-                <DocCard title="PRC License" date="Verified by Records" />
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
               </div>
             </div>
           </div>
@@ -1318,26 +1302,26 @@ function StepContent({
                     <span className="font-semibold text-slate-700">
                       Initial Evaluation
                     </span>
-                    <span className="text-slate-800 font-bold">41 pts</span>
+                    <span className="text-slate-800 font-bold">-- pts</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-semibold text-slate-700">
                       Qualifying Exam
                     </span>
-                    <span className="text-slate-800 font-bold">85 pts</span>
+                    <span className="text-slate-800 font-bold">-- pts</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">
                     <span className="font-semibold text-slate-700">
                       Interview & Demo
                     </span>
-                    <span className="text-slate-800 font-bold">92 pts</span>
+                    <span className="text-slate-800 font-bold">-- pts</span>
                   </div>
                   <div className="pt-3 border-t border-slate-200 flex justify-between items-center">
                     <span className="font-bold text-slate-800">
                       Total Consolidated Score
                     </span>
                     <span className="text-xl font-black text-[#0038A8]">
-                      218
+                      ---
                     </span>
                   </div>
                 </div>
@@ -1347,11 +1331,8 @@ function StepContent({
                 <p className="text-[12px] font-bold text-slate-800 uppercase tracking-wide mb-2">
                   Processed Documents:
                 </p>
-                <DocCard title="Eval Scoresheet.pdf" date="Rated by HRMPSB" />
-                <DocCard
-                  title="Interview & Demo Ratings.pdf"
-                  date="Rated by HRMPSB"
-                />
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
               </div>
             </div>
           </div>
@@ -1460,14 +1441,8 @@ function StepContent({
                 <p className="text-[12px] font-bold text-slate-800 uppercase tracking-wide mb-2">
                   Generated Reports:
                 </p>
-                <DocCard
-                  title="Draft Deliberation Report.pdf"
-                  date="Auto-generated based on consolidated scores"
-                />
-                <DocCard
-                  title="Comparative Assessment Results.pdf"
-                  date="Auto-generated"
-                />
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
               </div>
 
               <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg">
@@ -1573,14 +1548,8 @@ function StepContent({
                 <p className="text-[12px] font-bold text-slate-800 uppercase tracking-wide mb-2">
                   Pending Signatures:
                 </p>
-                <DocCard
-                  title="Draft Deliberation Report.pdf"
-                  date="Routed by HRMO Secretariat"
-                />
-                <DocCard
-                  title="Comparative Assessment Results.pdf"
-                  date="Routed by HRMO Secretariat"
-                />
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
               </div>
 
               <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg">
@@ -1876,14 +1845,8 @@ function StepContent({
                 <p className="text-[12px] font-bold text-slate-800 uppercase tracking-wide mb-2">
                   Drafted Papers:
                 </p>
-                <DocCard
-                  title="Draft Appointment Paper.pdf"
-                  date="Generated by HRMO"
-                />
-                <DocCard
-                  title="Advice of Assignment.pdf"
-                  date="Approved by Appointing Authority"
-                />
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
               </div>
 
               <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg">
@@ -2009,26 +1972,11 @@ function StepContent({
                 <p className="text-[12px] font-bold text-slate-800 uppercase tracking-wide mb-2">
                   Attached Documents:
                 </p>
-                <DocCard
-                  title="Signed Appointment Paper.pdf"
-                  date="Signed by Appointing Authority"
-                />
-                <DocCard
-                  title="Medical Certificate (CS Form No. 211).pdf"
-                  date="Submitted by Appointee"
-                />
-                <DocCard
-                  title="NBI Clearance.pdf"
-                  date="Submitted by Appointee"
-                />
-                <DocCard
-                  title="Statement of Assets, Liabilities and Net Worth (SALN).pdf"
-                  date="Submitted by Appointee"
-                />
-                <DocCard
-                  title="Oath of Office.pdf"
-                  date="Submitted by Appointee"
-                />
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
+                {/* Removed mock DocCard */}
               </div>
 
               <div className="p-4 bg-slate-50 border border-slate-100 rounded-lg">
@@ -2170,26 +2118,11 @@ function StepContent({
               Submitted Appointment Papers
             </h4>
             <div className="space-y-3">
-              <DocCard
-                title="Signed Appointment Paper.pdf"
-                date="Submitted by HRMO"
-              />
-              <DocCard
-                title="Medical Certificate (CS Form No. 211).pdf"
-                date="Submitted by Appointee"
-              />
-              <DocCard
-                title="NBI Clearance.pdf"
-                date="Submitted by Appointee"
-              />
-              <DocCard
-                title="Statement of Assets, Liabilities and Net Worth (SALN).pdf"
-                date="Submitted by Appointee"
-              />
-              <DocCard
-                title="Oath of Office.pdf"
-                date="Submitted by Appointee"
-              />
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
             </div>
           </div>
 
@@ -2297,14 +2230,8 @@ function StepContent({
               Approved Appointment Documents
             </h4>
             <div className="space-y-3">
-              <DocCard
-                title="Approved Appointment Paper (CSC Attested).pdf"
-                date="Returned by CSC Field Office"
-              />
-              <DocCard
-                title="Appointments Transmittal List.pdf"
-                date="Batch reference for posting"
-              />
+              {/* Removed mock DocCard */}
+              {/* Removed mock DocCard */}
             </div>
 
             <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-lg">

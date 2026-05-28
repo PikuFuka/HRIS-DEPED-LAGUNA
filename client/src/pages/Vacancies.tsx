@@ -605,9 +605,30 @@ export default function Vacancies() {
             vacancy={selectedVacancy}
             onClose={() => setSelectedVacancy(null)}
             userRole={user?.role}
-            onApply={(v) => {
-              setSelectedVacancy(null);
-              toast.success(`Application started for ${v.title}`);
+            onApply={(v, file) => {
+              const formData = new FormData();
+              formData.append('vacancy_id', String(v.id));
+              formData.append('application_type', v.type);
+              if (file) formData.append('document', file);
+
+              fetch('/api/applications', {
+                method: 'POST',
+                body: formData
+              })
+              .then(async (res) => {
+                if (!res.ok) {
+                  const errData = await res.json().catch(() => ({}));
+                  throw new Error(errData.error || errData.message || 'Failed to submit application');
+                }
+                return res.json();
+              })
+              .then(() => {
+                setSelectedVacancy(null);
+                toast.success(`Application successfully submitted for ${v.title}`);
+              })
+              .catch(err => {
+                toast.error(err.message);
+              });
             }}
             onEdit={(v) => {
               handleEditVacancy(v);

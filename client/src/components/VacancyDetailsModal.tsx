@@ -1,5 +1,6 @@
 import { motion, AnimatePresence } from "motion/react";
 import { createPortal } from "react-dom";
+import { useState } from "react";
 import { 
   Building2, 
   MapPin, 
@@ -36,11 +37,13 @@ interface VacancyDetailsModalProps {
   vacancy: Vacancy | null;
   onClose: () => void;
   userRole?: string;
-  onApply?: (vacancy: Vacancy) => void;
+  onApply?: (vacancy: Vacancy, file: File | null) => void;
   onEdit?: (vacancy: Vacancy) => void;
 }
 
 export function VacancyDetailsModal({ vacancy, onClose, userRole, onApply, onEdit }: VacancyDetailsModalProps) {
+  const [applicationFile, setApplicationFile] = useState<File | null>(null);
+
   if (!vacancy) return null;
 
   return createPortal(
@@ -205,9 +208,18 @@ export function VacancyDetailsModal({ vacancy, onClose, userRole, onApply, onEdi
             )}
 
             {userRole === "applicant" && onApply && (
-              <div className="flex justify-center pt-4">
+              <div className="flex flex-col items-center pt-4 space-y-4">
+                <div className="w-full max-w-md bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl p-6 text-center">
+                  <p className="text-sm font-bold text-slate-600 mb-2">Upload Resume / PDS (PDF)</p>
+                  <input 
+                    type="file" 
+                    accept=".pdf,.doc,.docx"
+                    onChange={(e) => setApplicationFile(e.target.files?.[0] || null)}
+                    className="text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-xs file:font-bold file:bg-[#0038A8]/10 file:text-[#0038A8] hover:file:bg-[#0038A8]/20 transition-all cursor-pointer w-full"
+                  />
+                </div>
                 <button 
-                  onClick={() => onApply(vacancy)}
+                  onClick={() => onApply(vacancy, applicationFile)}
                   className="w-full max-w-md py-5 bg-[#0038A8] text-white font-black rounded-3xl shadow-2xl shadow-blue-900/20 hover:scale-[1.02] transition-all active:scale-95 flex items-center justify-center gap-4 text-xl tracking-tight"
                 >
                   SUBMIT APPLICATION <ChevronRight className="w-6 h-6" />

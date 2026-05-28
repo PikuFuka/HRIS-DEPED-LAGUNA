@@ -11,6 +11,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Shell from "./components/layout/Shell";
 import Dashboard from "./pages/Dashboard";
+import Applications from "./pages/Applications";
 import WorkflowView from "./pages/workflow/WorkflowView";
 import Settings from "./pages/Settings";
 import Vacancies from "./pages/Vacancies";
@@ -18,6 +19,9 @@ import Placeholder from "./pages/Placeholder";
 import Records from "./pages/Records";
 import Reports from "./pages/Reports";
 import Registers from "./pages/Registers";
+import Deliberations from "./pages/Deliberations";
+import Appointments from "./pages/Appointments";
+import CscSubmissions from "./pages/CscSubmissions";
 import Hierarchy from "./pages/Hierarchy";
 import AdminUsers from "./pages/admin/AdminUsers";
 import AdminLogs from "./pages/admin/AdminLogs";
@@ -32,12 +36,12 @@ function AnimatedRoutes() {
         <Route path="/register" element={<Register />} />
         <Route path="/" element={<Shell />}>
           <Route index element={<Dashboard />} />
-          <Route path="applications" element={<Dashboard />} />
+          <Route path="applications" element={<Applications />} />
           <Route path="applications/:id" element={<WorkflowView />} />
 
           {/* HRMO Routes */}
           <Route path="vacancies" element={<Vacancies />} />
-          <Route path="appointments" element={<Dashboard />} />
+          <Route path="appointments" element={<Appointments />} />
           <Route path="reports" element={<Reports />} />
 
           {/* Records Routes */}
@@ -47,13 +51,13 @@ function AnimatedRoutes() {
           {/* HRMPSB Routes */}
           <Route path="screening" element={<Dashboard />} />
           <Route path="evaluations" element={<Dashboard />} />
-          <Route path="deliberations" element={<Dashboard />} />
+          <Route path="deliberations" element={<Deliberations />} />
 
           {/* Approver Routes */}
           <Route path="approvals" element={<Dashboard />} />
 
           {/* CSC Routes */}
-          <Route path="csc-submissions" element={<Dashboard />} />
+          <Route path="csc-submissions" element={<CscSubmissions />} />
           <Route path="registers" element={<Registers />} />
 
           <Route path="hierarchy" element={<Hierarchy />} />

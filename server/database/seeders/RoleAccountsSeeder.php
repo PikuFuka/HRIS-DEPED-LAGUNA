@@ -51,6 +51,62 @@ class RoleAccountsSeeder extends Seeder
                 'email' => 'csc@hris.test',
                 'role'  => 'csc',
             ],
+            // New Workflow Roles
+            [
+                'name'  => 'HRMO Staff',
+                'email' => 'hrmostaff@hris.test',
+                'role'  => 'HRMO Staff',
+            ],
+            [
+                'name'  => 'Records Staff (Workflow)',
+                'email' => 'recordsstaff@hris.test',
+                'role'  => 'Records Staff',
+            ],
+            [
+                'name'  => 'ADAS Role',
+                'email' => 'adasrole@hris.test',
+                'role'  => 'ADAS',
+            ],
+            [
+                'name'  => 'HRMO Role',
+                'email' => 'hrmorole@hris.test',
+                'role'  => 'HRMO',
+            ],
+            [
+                'name'  => 'HRMPSB Sub-Committee',
+                'email' => 'hrmpsbsub@hris.test',
+                'role'  => 'HRMPSB Sub-Committee',
+            ],
+            [
+                'name'  => 'HRMPSB Role',
+                'email' => 'hrmpsbrole@hris.test',
+                'role'  => 'HRMPSB',
+            ],
+            [
+                'name'  => 'ADAS III',
+                'email' => 'adas3@hris.test',
+                'role'  => 'ADAS III',
+            ],
+            [
+                'name'  => 'HRMO Staff/ HRMPSB Secretariat',
+                'email' => 'secretariat@hris.test',
+                'role'  => 'HRMO Staff/ HRMPSB Secretariat',
+            ],
+            [
+                'name'  => 'HRMO / Appointing Authority',
+                'email' => 'appointingauthority@hris.test',
+                'role'  => 'HRMO / Appointing Authority',
+            ],
+            [
+                'name'  => 'CSC Field Office',
+                'email' => 'cscfield@hris.test',
+                'role'  => 'CSC Field Office',
+            ],
+            [
+                'name'  => 'DepEd Records Staff',
+                'email' => 'depedrecords@hris.test',
+                'role'  => 'DepEd Records Staff',
+            ],
         ];
 
         foreach ($accounts as $account) {
