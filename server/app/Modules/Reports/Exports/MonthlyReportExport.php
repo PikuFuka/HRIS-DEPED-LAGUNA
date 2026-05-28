@@ -12,9 +12,9 @@ class MonthlyReportExport implements FromCollection, WithHeadings
     public function collection()
     {
         $totalEmployees = Employee::count();
-        $plantillaCount = Employee::where('employment_type', 'Plantilla')->count();
-        $nonPlantillaCount = Employee::whereIn('employment_type', ['COS', 'JO', 'Casual'])->count();
-        $vacantItems = PlantillaItem::where('is_filled', false)->count();
+        $plantillaCount = Employee::where('employment_type', 'plantilla')->count();
+        $nonPlantillaCount = Employee::where('employment_type', 'non-plantilla')->count();
+        $vacantItems = PlantillaItem::where('status', 'unfilled')->count();
 
         return collect([
             [

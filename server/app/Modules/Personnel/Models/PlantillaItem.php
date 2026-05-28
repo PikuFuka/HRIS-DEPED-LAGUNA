@@ -3,6 +3,7 @@
 namespace App\Modules\Personnel\Models;
 
 use App\Modules\Personnel\Enums\PlantillaStatus;
+use App\Modules\Recruitment\Models\Vacancy;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
