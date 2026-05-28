@@ -27,9 +27,9 @@ interface ItemRecord {
 export default function Registers() {
   const { user } = useAuth();
   const [searchTerm, setSearchTerm] = useState("");
-  const [typeFilter, setTypeFilter] = useState<"All" | "plantilla" | "non-plantilla">("All");
+  const [typeFilter, setTypeFilter] = useState<"All" | "Plantilla" | "Non-Plantilla">("All");
   const [loading, setLoading] = useState(true);
-  const [selectedItem, setSelectedItem] = useState<ItemRecord | null>(null);
+  const [selectedItem, setSelectedItem] = useState<any | null>(null);
 
   const [items, setItems] = useState<any[]>([]);
 
@@ -37,17 +37,42 @@ export default function Registers() {
     const fetchItems = async () => {
       setLoading(true);
       try {
-        const res = await fetch("/api/plantilla-items", {
-          headers: { Accept: "application/json" }
-        });
-        const data = await res.json().catch(() => ({}));
-        if (data && Array.isArray(data.data)) {
-          setItems(data.data);
-        } else if (Array.isArray(data)) {
-          setItems(data);
-        } else {
-          setItems([]);
+        const [plantillaRes, nonPlantillaRes] = await Promise.all([
+          fetch("/api/plantilla-items", { headers: { Accept: "application/json" } }),
+          fetch("/api/records/non-plantilla", { headers: { Accept: "application/json" } })
+        ]);
+        
+        const plantillaData = await plantillaRes.json().catch(() => ({}));
+        const nonPlantillaData = await nonPlantillaRes.json().catch(() => ({}));
+
+        let combined: any[] = [];
+
+        if (plantillaData && Array.isArray(plantillaData.data)) {
+          combined = combined.concat(plantillaData.data.map((item: any) => ({ ...item, recordType: "Plantilla" })));
+        } else if (Array.isArray(plantillaData)) {
+          combined = combined.concat(plantillaData.map((item: any) => ({ ...item, recordType: "Plantilla" })));
         }
+
+        const npRecords = nonPlantillaData && Array.isArray(nonPlantillaData.data) ? nonPlantillaData.data : (Array.isArray(nonPlantillaData) ? nonPlantillaData : []);
+        const mappedNp = npRecords.map((np: any) => ({
+          id: `np-${np.id}`,
+          item_number: "N/A",
+          position_title: np.nature_of_work || "Non-Plantilla Personnel",
+          salary_grade: "N/A",
+          status: np.status_of_engagement || "Active",
+          school_name: np.station_id || np.office_assignment || "N/A",
+          recordType: "Non-Plantilla",
+          employee: {
+            id: np.id,
+            employee_id: np.employee_id,
+            first_name: np.first_name,
+            last_name: np.last_name,
+            full_name: `${np.last_name}, ${np.first_name}`
+          }
+        }));
+        
+        combined = combined.concat(mappedNp);
+        setItems(combined);
       } catch (e) {
         console.error(e);
       } finally {
@@ -59,8 +84,7 @@ export default function Registers() {
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.position_title?.toLowerCase().includes(searchTerm.toLowerCase());
-    const typeStr = item.type === "plantilla" ? "plantilla" : "non-plantilla";
-    const matchesType = typeFilter === "All" || typeStr === typeFilter;
+    const matchesType = typeFilter === "All" || item.recordType === typeFilter;
     return matchesSearch && matchesType;
   });
 
@@ -107,12 +131,7 @@ export default function Registers() {
           </div>
         </div>
       ) : (
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-          className="contents"
-        >
+        <div className="contents">
           <div className="flex flex-col gap-6 shrink-0 sm:mt-2">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <div>
@@ -154,17 +173,17 @@ export default function Registers() {
                   All Items
                 </button>
                 <button
-                  onClick={() => setTypeFilter("plantilla")}
+                  onClick={() => setTypeFilter("Plantilla")}
                   className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${
-                    typeFilter === "plantilla" ? "bg-blue-50 text-[#0038A8]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                    typeFilter === "Plantilla" ? "bg-blue-50 text-[#0038A8]" : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
                   }`}
                 >
                   Plantilla
                 </button>
                 <button
-                  onClick={() => setTypeFilter("non-plantilla")}
+                  onClick={() => setTypeFilter("Non-Plantilla")}
                   className={`px-4 py-2 text-sm font-bold rounded-xl transition-all ${
-                    typeFilter === "non-plantilla" ? "bg-amber-50 text-amber-700" : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+                    typeFilter === "Non-Plantilla" ? "bg-amber-50 text-amber-700" : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
                   }`}
                 >
                   Non-Plantilla
@@ -176,7 +195,7 @@ export default function Registers() {
               <table className="w-full text-left text-sm whitespace-nowrap border-separate border-spacing-0">
                 <thead className="bg-[#fcfdfd] sticky top-0 z-10 border-b border-slate-200 shadow-sm">
                   <tr className="text-slate-500 font-bold text-[10px] uppercase tracking-[0.15em] font-sans">
-                    <th className="px-6 py-4">Position</th>
+                    <th className="px-6 py-4">Item No & Position</th>
                     <th className="px-6 py-4">Type</th>
                     <th className="px-6 py-4">Salary Grade</th>
                     <th className="px-6 py-4">Status</th>
@@ -192,27 +211,31 @@ export default function Registers() {
                         className="hover:bg-slate-50/50 transition-colors group cursor-pointer"
                       >
                         <td className="px-6 py-4">
-                          <div className="font-bold text-slate-900 tracking-tight text-[13px]">{item.position_title}</div>
-                          <div className="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-0.5">
-                            {item.school_name || item.office_assignment || "N/A"}
+                          <div className="flex flex-col">
+                            <span className="font-mono text-[10px] font-bold text-[#0038A8] bg-blue-50 px-2 py-0.5 rounded border border-blue-100 w-fit mb-1.5 align-middle tracking-tight">{item.item_number}</span>
+                            <span className="font-bold text-slate-900 tracking-tight text-[13px]">{item.position_title}</span>
+                            <div className="text-[10px] text-slate-500 font-bold uppercase tracking-tight mt-1">
+                              {item.school_name || item.office_assignment || "N/A"}
+                            </div>
                           </div>
                         </td>
                         <td className="px-6 py-4">
                            <span className={`px-2.5 py-1 rounded-md text-[10px] font-black uppercase tracking-wider inline-flex items-center border ${
-                            item.type === "plantilla" 
-                              ? "bg-blue-50/50 text-[#0038A8] border-blue-100" 
-                              : "bg-amber-50/50 text-amber-700 border-amber-100"
+                            item.recordType === "Plantilla" 
+                              ? "bg-blue-50 text-blue-700 border-blue-100" 
+                              : "bg-amber-50 text-amber-700 border-amber-100"
                           }`}>
-                            {item.type}
+                            {item.recordType}
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                           <span className="font-bold text-slate-600">SG {item.salary_grade}</span>
+                           <span className="font-bold text-slate-600">{item.salary_grade !== "N/A" ? `SG ${item.salary_grade}` : "N/A"}</span>
                         </td>
                         <td className="px-6 py-4">
                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider inline-block border ${
-                            item.status === "Filled" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
-                            item.status === "Vacant" ? "bg-rose-50 text-rose-700 border-rose-100" :
+                            item.status === "filled" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
+                            item.status === "unfilled" ? "bg-rose-50 text-rose-700 border-rose-100" :
+                            item.recordType === "Non-Plantilla" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
                             "bg-slate-50 text-slate-600 border-slate-200"
                            }`}>
                             {item.status}
@@ -252,19 +275,12 @@ export default function Registers() {
           
           {/* History Modal */}
           {selectedItem && createPortal(
-            <AnimatePresence>
               <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 md:p-6">
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
+                <div
                   onClick={() => setSelectedItem(null)}
                   className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
                 />
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.98, y: 8 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.98, y: 8 }}
+                <div
                   className="relative w-full max-w-lg bg-white rounded-[24px] shadow-2xl border border-slate-200 overflow-hidden max-h-[90vh] flex flex-col"
                 >
                   <div className="px-6 py-5 border-b border-slate-100 bg-white flex justify-between items-center shrink-0">
@@ -353,12 +369,11 @@ export default function Registers() {
                       Close
                     </button>
                   </div>
-                </motion.div>
-              </div>
-            </AnimatePresence>,
+                </div>
+              </div>,
             document.body
           )}
-        </motion.div>
+        </div>
       )}
     </div>
   );

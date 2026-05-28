@@ -15,6 +15,8 @@ class PlantillaItemResource extends JsonResource
             'position_title'    => $this->position_title,
             'salary_grade'      => $this->salary_grade,
             'status'            => $this->status,
+            'type'              => $this->type,
+            'school_name'       => $this->school_name,
             'office_assignment' => $this->office_assignment,
             'employee'          => $this->whenLoaded('employee', fn () => [
                 'id'              => $this->employee->id,

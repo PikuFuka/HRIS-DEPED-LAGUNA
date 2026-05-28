@@ -11,7 +11,7 @@ class UserController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        return response()->json(User::with('roles')->paginate(25));
+        return response()->json(User::with('roles')->paginate(1000));
     }
 
     public function store(Request $request)

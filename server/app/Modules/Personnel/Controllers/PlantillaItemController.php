@@ -20,7 +20,7 @@ class PlantillaItemController extends \App\Http\Controllers\Controller
     {
         $items = PlantillaItem::with('employee')
             ->orderBy('item_number')
-            ->paginate(25);
+            ->paginate(1000);
 
         return PlantillaItemResource::collection($items);
     }

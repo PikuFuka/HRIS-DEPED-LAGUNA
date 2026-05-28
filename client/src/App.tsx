@@ -27,198 +27,44 @@ function AnimatedRoutes() {
   const location = useLocation();
 
   return (
-    <AnimatePresence mode="wait">
-      <Routes location={location} key={location.pathname}>
-        <Route
-          path="/login"
-          element={
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              <Login />
-            </motion.div>
-          }
-        />
-        <Route
-          path="/register"
-          element={
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-              className="h-full"
-            >
-              <Register />
-            </motion.div>
-          }
-        />
+    <Routes>
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/" element={<Shell />}>
-          <Route
-            index
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="applications"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="applications/:id"
-            element={
-              <PageTransition>
-                <WorkflowView />
-              </PageTransition>
-            }
-          />
+          <Route index element={<Dashboard />} />
+          <Route path="applications" element={<Dashboard />} />
+          <Route path="applications/:id" element={<WorkflowView />} />
 
           {/* HRMO Routes */}
-          <Route
-            path="vacancies"
-            element={
-              <PageTransition>
-                <Vacancies />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="appointments"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="reports"
-            element={
-              <PageTransition>
-                <Reports />
-              </PageTransition>
-            }
-          />
+          <Route path="vacancies" element={<Vacancies />} />
+          <Route path="appointments" element={<Dashboard />} />
+          <Route path="reports" element={<Reports />} />
 
           {/* Records Routes */}
-          <Route
-            path="verification"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="records"
-            element={
-              <PageTransition>
-                <Records />
-              </PageTransition>
-            }
-          />
+          <Route path="verification" element={<Dashboard />} />
+          <Route path="records" element={<Records />} />
 
           {/* HRMPSB Routes */}
-          <Route
-            path="screening"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="evaluations"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="deliberations"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
+          <Route path="screening" element={<Dashboard />} />
+          <Route path="evaluations" element={<Dashboard />} />
+          <Route path="deliberations" element={<Dashboard />} />
 
           {/* Approver Routes */}
-          <Route
-            path="approvals"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
+          <Route path="approvals" element={<Dashboard />} />
 
           {/* CSC Routes */}
-          <Route
-            path="csc-submissions"
-            element={
-              <PageTransition>
-                <Dashboard />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="registers"
-            element={
-              <PageTransition>
-                <Registers />
-              </PageTransition>
-            }
-          />
+          <Route path="csc-submissions" element={<Dashboard />} />
+          <Route path="registers" element={<Registers />} />
 
-          <Route
-            path="hierarchy"
-            element={
-              <PageTransition>
-                <Hierarchy />
-              </PageTransition>
-            }
-          />
+          <Route path="hierarchy" element={<Hierarchy />} />
 
           {/* Super Admin Routes */}
-          <Route
-            path="admin/users"
-            element={
-              <PageTransition>
-                <AdminUsers />
-              </PageTransition>
-            }
-          />
-          <Route
-            path="admin/logs"
-            element={
-              <PageTransition>
-                <AdminLogs />
-              </PageTransition>
-            }
-          />
+          <Route path="admin/users" element={<AdminUsers />} />
+          <Route path="admin/logs" element={<AdminLogs />} />
 
-          <Route
-            path="settings"
-            element={
-              <PageTransition>
-                <Settings />
-              </PageTransition>
-            }
-          />
+          <Route path="settings" element={<Settings />} />
         </Route>
       </Routes>
-    </AnimatePresence>
   );
 }
 

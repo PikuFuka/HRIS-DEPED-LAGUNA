@@ -10,7 +10,7 @@ class ActivityLogController extends \App\Http\Controllers\Controller
     public function index()
     {
         // Load the logs with the user who caused the activity and the model that was modified (subject)
-        $logs = Activity::with(['causer', 'subject'])->latest()->paginate(50);
+        $logs = Activity::with(['causer', 'subject'])->latest()->paginate(1000);
         return response()->json($logs);
     }
 }

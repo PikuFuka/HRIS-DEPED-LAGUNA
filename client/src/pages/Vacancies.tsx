@@ -822,7 +822,7 @@ export default function Vacancies() {
                     )}
                   </div>
                 )}
-          </div>
+              </div>
 
           {totalPages > 1 && (
             <div className="mt-8 flex items-center justify-between border-t border-slate-100 pt-6">

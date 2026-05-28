@@ -20,7 +20,7 @@ export default function AdminUsers() {
         headers: { Accept: "application/json" }
       });
       const data = await res.json();
-      setUsers(data);
+      setUsers(data.data || data);
     } catch (e) {
       console.error(e);
     }
@@ -32,7 +32,7 @@ export default function AdminUsers() {
         headers: { Accept: "application/json" }
       });
       const data = await res.json();
-      setRoles(data);
+      setRoles(data.data || data);
     } catch (e) {
       console.error(e);
     }

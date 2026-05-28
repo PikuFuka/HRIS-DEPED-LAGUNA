@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
-import { Skeleton } from "../components/ui/Skeleton";
+import { Skeleton, TableSkeleton } from "../components/ui/Skeleton";
 import {
   Search,
   User,
@@ -126,8 +125,47 @@ export default function Records() {
       fetch("/api/records/non-plantilla", { headers: { Accept: "application/json" } }).then(res => res.json().catch(() => ({})))
     ])
     .then(([plantilla, nonPlantilla]) => {
-      setPlantillaData(Array.isArray(plantilla?.data) ? plantilla.data : (Array.isArray(plantilla) ? plantilla : []));
-      setNonPlantillaData(Array.isArray(nonPlantilla?.data) ? nonPlantilla.data : (Array.isArray(nonPlantilla) ? nonPlantilla : []));
+      const rawPlantilla = Array.isArray(plantilla?.data) ? plantilla.data : (Array.isArray(plantilla) ? plantilla : []);
+      const mappedPlantilla = rawPlantilla.map((p: any) => ({
+        ...p,
+        id: p.id,
+        itemNumber: p.plantilla_item?.item_number || "N/A",
+        positionParenthetical: p.plantilla_item?.position_title || p.plantilla_item?.position_parenthetical || "N/A",
+        positionStatus: p.plantilla_item?.status === 'filled' ? 'Filled' : 'Unfilled',
+        fullName: `${p.last_name}, ${p.first_name} ${p.middle_name ? p.middle_name.charAt(0) + '.' : ''}`,
+        schoolName: p.plantilla_item?.school_name || p.station_id || "N/A",
+        reclassification: p.plantilla_item?.is_reclassified ? "YES" : "NO",
+        previousItemNumber: p.plantilla_item?.previous_item_number || "N/A",
+        sex: p.sex || "N/A",
+        dob: p.dob || "N/A",
+        eligibility: p.civil_service_eligibility || "N/A",
+        tin: p.tin || "N/A",
+        employeeNumber: p.employee_id || "N/A",
+        originalAppointment: p.original_appointment_date || "N/A",
+        dateLastPromotion: p.last_promotion_date || "N/A",
+        schoolId: p.plantilla_item?.school_id || p.station_id || "N/A",
+      }));
+      setPlantillaData(mappedPlantilla);
+
+      const rawNonPlantilla = Array.isArray(nonPlantilla?.data) ? nonPlantilla.data : (Array.isArray(nonPlantilla) ? nonPlantilla : []);
+      const mappedNonPlantilla = rawNonPlantilla.map((p: any, idx: number) => ({
+        ...p,
+        id: p.id,
+        no: idx + 1,
+        fullName: `${p.last_name}, ${p.first_name} ${p.middle_name ? p.middle_name.charAt(0) + '.' : ''}`,
+        employeeNumber: p.employee_id || "N/A",
+        itemNumber: "N/A", 
+        natureOfWork: p.nature_of_work || "N/A",
+        schoolName: p.station_id || "N/A",
+        schoolId: p.station_id || "N/A",
+        monthlySalary: p.monthly_salary || "0.00",
+        statusOfEngagement: p.status_of_engagement || "N/A",
+        sex: p.sex || "N/A",
+        officeAssignment: p.office_assignment || "N/A",
+        firstDayOfService: p.first_day_of_service || "N/A",
+        yearsInService: 0,
+      }));
+      setNonPlantillaData(mappedNonPlantilla);
     })
     .catch(err => {
       console.error(err);
@@ -210,12 +248,8 @@ export default function Records() {
 
       <div className="flex-1 flex flex-col overflow-hidden shadow-[0_2px_8px_-2px_rgba(0,0,0,0.05)] rounded-[20px] border border-slate-200/80 bg-white">
         <div className="p-4 md:p-5 border-b border-slate-200 flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 shrink-0 bg-slate-50/50 relative">
-          <AnimatePresence>
             {selectedIds.length > 0 && (
-              <motion.div 
-                initial={{ opacity: 0, scaleY: 0 }}
-                animate={{ opacity: 1, scaleY: 1 }}
-                exit={{ opacity: 0, scaleY: 0 }}
+              <div 
                 className="absolute inset-0 z-20 bg-[#0038A8] flex items-center px-6 gap-4 origin-top"
               >
                 <button onClick={() => setSelectedIds([])} className="p-1 hover:bg-white/10 rounded">
@@ -232,9 +266,8 @@ export default function Records() {
                     Bulk Export (PDF)
                   </button>
                 </div>
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
 
           <div className="relative w-full sm:w-[400px] group">
             <div className="absolute left-4 top-1/2 -translate-y-1/2 flex items-center gap-3 text-slate-400 group-focus-within:text-[#0038A8] transition-colors">
@@ -349,7 +382,7 @@ export default function Records() {
                           <td className="px-6 py-4">
                             <div className="flex flex-col">
                               <span className="font-mono text-[10px] font-bold text-[#0038A8] bg-blue-50 px-2 py-0.5 rounded border border-blue-100 w-fit mb-1.5 align-middle tracking-tight">{record.itemNumber}</span>
-                              <span className="font-bold text-slate-800 tracking-tight text-[13px]">{record.positionParenthetical}</span>
+                              <span className="font-bold text-slate-800 tracking-tight text-[13px]">{record.positionParenthetical || "Position Title TBD"}</span>
                             </div>
                           </td>
                           <td className="px-6 py-4">
@@ -359,27 +392,21 @@ export default function Records() {
                             </div>
                           </td>
                           <td className="px-6 py-4">
-                             <span className={`px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider inline-block border ${
-                              record.positionStatus === "Filled" 
-                                ? "bg-emerald-50 text-emerald-700 border-emerald-100" 
-                                : "bg-amber-50 text-amber-700 border-amber-100"
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider inline-flex items-center border ${
+                              record.statusOfEngagement === "Active" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
+                              "bg-slate-50 text-slate-600 border-slate-200"
                             }`}>
-                              {record.positionStatus}
+                              {record.statusOfEngagement || "Active"}
                             </span>
                           </td>
                         </>
                       ) : (
                         <>
                           <td className="px-6 py-4">
-                             <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-mono font-black text-slate-300">{(record as NonPlantillaRecord).no.toString().padStart(2, '0')}</span>
-                                <div>
-                                  <div className="font-bold text-slate-900 tracking-tight text-[13px]">{record.fullName}</div>
-                                  <div className="text-[10px] text-slate-500 font-bold flex items-center gap-1.5 mt-1 uppercase tracking-tight">
-                                    <FileDigit className="w-3.5 h-3.5 text-slate-300" /> {record.employeeNumber}
-                                  </div>
-                                </div>
-                             </div>
+                            <div className="flex flex-col">
+                              <span className="font-mono text-[10px] font-bold text-[#CE1126] bg-red-50 px-2 py-0.5 rounded border border-red-100 w-fit mb-1.5 align-middle tracking-tight">{record.employeeNumber}</span>
+                              <span className="font-bold text-slate-900 tracking-tight text-[13px]">{record.fullName}</span>
+                            </div>
                           </td>
                           <td className="px-6 py-4">
                             <div className="font-bold text-slate-800 tracking-tight text-[13px]">{record.natureOfWork}</div>
@@ -434,19 +461,12 @@ export default function Records() {
 
       {/* Profile Detail Modal */}
       {selectedRecord && createPortal(
-        <AnimatePresence>
           <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4">
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setSelectedRecord(null)}
+            <div 
               className="absolute inset-0 bg-slate-950/40 backdrop-blur-sm"
+              onClick={() => setSelectedRecord(null)}
             />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            <div
               className="bg-white rounded-[24px] shadow-2xl border border-slate-200 w-full max-w-xl overflow-hidden max-h-[90vh] flex flex-col relative z-10"
             >
               {/* Modal Header */}
@@ -643,9 +663,8 @@ export default function Records() {
                   </button>
                 </div>
               </div>
-            </motion.div>
-          </div>
-        </AnimatePresence>,
+            </div>
+          </div>,
         document.body
       )}
 
